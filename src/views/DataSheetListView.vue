@@ -50,6 +50,8 @@ const handlePageChange = (page) => {
     currentPage.value = page
 }
 
+const emit = defineEmits(['update:modal'])
+const openModal = (dataSheet) => emit("update:modal", dataSheet);
 </script>
 
 <template>
@@ -89,7 +91,7 @@ const handlePageChange = (page) => {
                                 {{ fiche.niveau }}
                             </span>
 
-                            <button class="btn btn--ghost btn-sm" type="button">
+                            <button class="btn btn--ghost btn-sm" type="button" @click="openModal(fiche)">
                                 Voir la fiche
                             </button>
                         </div>
