@@ -1,4 +1,6 @@
 <script setup>
+import { useDataSheetsStore } from "@/store/dataSheetStore";
+const dataSheetStore = useDataSheetsStore();
 </script>
 
 <template>
@@ -39,7 +41,7 @@
                     </p>
 
                     <ul class="domain-card__meta">
-                        <li><strong>Fiches :</strong> ~XX</li>
+                        <li><strong>Fiches :</strong> {{ dataSheetStore.html.length }}</li>
                         <li><strong>Niveaux :</strong> Initial → Expert</li>
                         <li><strong>Compétences clés :</strong> structure de page, formulaires, tableaux, accessibilité.
                         </li>
@@ -60,7 +62,7 @@
                     </p>
 
                     <ul class="domain-card__meta">
-                        <li><strong>Fiches :</strong> ~XX</li>
+                        <li><strong>Fiches :</strong> {{ dataSheetStore.css.length }}</li>
                         <li><strong>Niveaux :</strong> Initial → Expert</li>
                         <li><strong>Compétences clés :</strong> box model, Flexbox, Grid, media queries.</li>
                     </ul>
@@ -80,7 +82,7 @@
                     </p>
 
                     <ul class="domain-card__meta">
-                        <li><strong>Fiches :</strong> ~XX</li>
+                        <li><strong>Fiches :</strong> {{ dataSheetStore.js.length }}</li>
                         <li><strong>Niveaux :</strong> Initial → Expert</li>
                         <li><strong>Compétences clés :</strong> DOM, événements, tableaux, fonctions, async/await.</li>
                     </ul>
@@ -100,7 +102,7 @@
                     </p>
 
                     <ul class="domain-card__meta">
-                        <li><strong>Fiches :</strong> ~XX</li>
+                        <li><strong>Fiches :</strong> {{ dataSheetStore.integration.length }}</li>
                         <li><strong>Niveaux :</strong> Initial → Expert</li>
                         <li><strong>Compétences clés :</strong> structure de projet, bonnes pratiques, a11y,
                             performances.</li>
