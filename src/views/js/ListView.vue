@@ -5,9 +5,8 @@ import FicheListView from '@/views/DataSheetListView.vue'
 </script>
 
 <template>
-  <FicheListView
-    title="Notions HTML"
-    subtitle="Travaille la structure, la sémantique et les bonnes pratiques HTML à travers les fiches du référentiel."
-    :fiches="dataSheetStore.js"
-  />
+  <FicheListView title="Notions JavaScript"
+    subtitle="Progresse du JavaScript de base aux concepts avancés : variables, DOM, conditions, boucles, fonctions, tableaux, objets, asynchrone et bonnes pratiques pour ajouter de l’interactivité à tes pages."
+    :fiches="dataSheetStore.js" />
+
 </template>
