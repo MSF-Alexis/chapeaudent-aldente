@@ -5,6 +5,7 @@
   --color-bg: #f8fafc;
   --color-bg-alt: #f1f5f9;
   --color-surface: #ffffff;
+  --color-surface-variant : rgb(245, 245, 245);
   --color-border: #e2e8f0;
   --color-border-soft: #cbd5e1;
   --color-border-strong: #94a3b8;
@@ -654,6 +655,14 @@ nav img {
 
 .fiche-detail__exemple {
   background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.fiche-detail__exemple > pre {
+  background-color: var(--color-surface-variant);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   padding: var(--space-lg);
