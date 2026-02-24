@@ -1,10 +1,11 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useDataSheetsStore } from "@/store/dataSheetStore";
-const dataSheetStore = useDataSheetsStore();
+import { highlightHtmlExample } from '@/helpers/highlightHtmlExample'
 import FicheListView from '@/views/DataSheetListView.vue'
 import BaseModal from '@/components/BaseModal.vue'
 
+const dataSheetStore = useDataSheetsStore();
 const isOpen = ref(false)
 const currentFiche = ref(null)
 
@@ -14,10 +15,15 @@ const handleOpenedModal = (fiche) => {
 }
 
 const formatId = (rawId, prefix = '#') => {
-    if (!rawId) return ''
-    const match = rawId.match(/\d+/);
-    return `${prefix}${match}`
+  if (!rawId) return ''
+  const match = rawId.match(/\d+/);
+  return `${prefix}${match}`
 }
+
+const highlightedExample = computed(() => {
+  if (!currentFiche.value) return ''
+  return highlightHtmlExample(currentFiche.value.exemple)
+})
 
 </script>
 
@@ -30,10 +36,7 @@ const formatId = (rawId, prefix = '#') => {
         </h2>
         <p v-if="currentFiche" class="fiche-detail__subtitle">
           Fiche {{ formatId(currentFiche.fichier) }} · Niveau&nbsp;
-          <span
-            class="pill pill--level"
-            :data-level="currentFiche.niveau"
-          >
+          <span class="pill pill--level" :data-level="currentFiche.niveau">
             {{ currentFiche.niveau }}
           </span>
         </p>
@@ -41,14 +44,12 @@ const formatId = (rawId, prefix = '#') => {
     </template>
 
     <section v-if="currentFiche" class="fiche-detail">
-      <!-- Colonne principale : on rend directement le HTML du JSON -->
       <div class="fiche-detail__main">
         <article class="fiche-detail__section" v-html="currentFiche.objectif"></article>
         <article class="fiche-detail__section" v-html="currentFiche.theorie"></article>
-        <article class="fiche-detail__section" v-html="currentFiche.exemple"></article>
+        <article class="fiche-detail__exemple" v-html="highlightedExample" />
       </div>
 
-      <!-- Colonne latérale : méta + sources + infos supp -->
       <aside class="fiche-detail__side">
         <section class="fiche-detail__card">
           <h4>Informations</h4>
@@ -62,10 +63,7 @@ const formatId = (rawId, prefix = '#') => {
           <div class="fiche-detail__content" v-html="currentFiche.sources"></div>
         </section>
 
-        <section
-          v-if="currentFiche.infos_supplementaires"
-          class="fiche-detail__card"
-        >
+        <section v-if="currentFiche.infos_supplementaires" class="fiche-detail__card">
           <h4>Informations complémentaires</h4>
           <div class="fiche-detail__content" v-html="currentFiche.infos_supplementaires"></div>
         </section>
@@ -77,80 +75,20 @@ const formatId = (rawId, prefix = '#') => {
     </p>
 
     <template #footer>
-      <button
-        class="btn btn--ghost btn-sm"
-        type="button"
-        @click="isOpen = false"
-      >
+      <button class="btn btn--ghost btn-sm" type="button" @click="isOpen = false">
         Fermer
       </button>
     </template>
   </BaseModal>
 
-  <FicheListView
-    title="Notions HTML"
+  <FicheListView title="Notions HTML"
     subtitle="Structure, sémantique, accessibilité et bonnes pratiques pour un HTML propre et compréhensible."
-    :fiches="dataSheetStore.html"
-    @update:modal="handleOpenedModal"
-  />
+    :fiches="dataSheetStore.html" @update:modal="handleOpenedModal" />
 </template>
 
 <style scoped>
-.fiche-detail {
-  display: grid;
-  grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.1fr);
-  gap: var(--space-xl);
-  padding: var(--space-lg) var(--space-xl);
-  background-color: var(--color-bg);
-}
-
-/* Header */
-.fiche-detail__header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.fiche-detail__title {
-  font-size: 1.35rem;
-  line-height: 1.3;
-  margin: 0;
-  color: var(--color-text-main);
-}
-
-.fiche-detail__subtitle {
-  margin: 0;
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-}
-
-/* Colonne principale */
-.fiche-detail__main {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-lg);
-}
-
-/* Blocs de contenu */
-.fiche-detail__section {
-  background-color: var(--color-surface);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  padding: var(--space-lg);
-  box-shadow: var(--shadow-soft);
-}
-
-/* Accent sur la première section (Objectif) */
-.fiche-detail__section:first-child {
-  border-top: 4px solid var(--color-html);
-}
-
 /* === CONTENU DU JSON : h3 / texte / listes / code / liens === */
 
-/* Titres h3 des fiches (Objectif, Théorie, Exemple, Sources...) */
 .fiche-detail__section :deep(h3) {
   margin-top: 0;
   margin-bottom: var(--space-sm);
@@ -159,7 +97,6 @@ const formatId = (rawId, prefix = '#') => {
   color: var(--color-text-main);
 }
 
-/* Paragraphes pédagogiques */
 .fiche-detail__section :deep(p),
 .fiche-detail__card :deep(p) {
   margin-bottom: var(--space-sm);
@@ -169,7 +106,6 @@ const formatId = (rawId, prefix = '#') => {
   max-width: 70ch;
 }
 
-/* Listes */
 .fiche-detail__section :deep(ul),
 .fiche-detail__card :deep(ul) {
   padding-left: 1.3rem;
@@ -186,7 +122,6 @@ const formatId = (rawId, prefix = '#') => {
   color: var(--color-primary);
 }
 
-/* Code inline */
 .fiche-detail__section :deep(code),
 .fiche-detail__card :deep(code) {
   padding: 0.1rem 0.25rem;
@@ -196,7 +131,6 @@ const formatId = (rawId, prefix = '#') => {
   font-size: 0.8rem;
 }
 
-/* Blocs de code */
 .fiche-detail__section :deep(pre) {
   margin: var(--space-sm) 0 0;
   padding: var(--space-sm) var(--space-md);
@@ -207,7 +141,6 @@ const formatId = (rawId, prefix = '#') => {
   overflow-x: auto;
 }
 
-/* Liens (MDN, W3Schools, etc.) */
 .fiche-detail__section :deep(a),
 .fiche-detail__card :deep(a) {
   color: var(--color-primary);
@@ -224,7 +157,6 @@ const formatId = (rawId, prefix = '#') => {
   background-color: rgba(37, 99, 235, 0.08);
 }
 
-/* Colonne latérale */
 .fiche-detail__side {
   display: flex;
   flex-direction: column;
@@ -239,7 +171,6 @@ const formatId = (rawId, prefix = '#') => {
   box-shadow: var(--shadow-softer);
 }
 
-/* Carte infos avec accent HTML */
 .fiche-detail__card:first-child {
   border-top: 3px solid var(--color-html);
 }
@@ -258,7 +189,6 @@ const formatId = (rawId, prefix = '#') => {
   color: var(--color-text-soft);
 }
 
-/* Lignes de méta */
 .fiche-detail__meta-line {
   display: flex;
   align-items: center;
@@ -271,14 +201,12 @@ const formatId = (rawId, prefix = '#') => {
   color: var(--color-text-soft);
 }
 
-/* Message vide */
 .fiche-detail__empty {
   padding: var(--space-md) var(--space-lg);
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
 }
 
-/* Responsive */
 @media (max-width: 900px) {
   .fiche-detail {
     grid-template-columns: 1fr;
@@ -294,4 +222,3 @@ const formatId = (rawId, prefix = '#') => {
   }
 }
 </style>
-
