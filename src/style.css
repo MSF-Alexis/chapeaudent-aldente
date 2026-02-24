@@ -5,7 +5,7 @@
   --color-bg: #f8fafc;
   --color-bg-alt: #f1f5f9;
   --color-surface: #ffffff;
-  --color-surface-variant : rgb(245, 245, 245);
+  --color-surface-variant: rgb(245, 245, 245);
   --color-border: #e2e8f0;
   --color-border-soft: #cbd5e1;
   --color-border-strong: #94a3b8;
@@ -350,6 +350,10 @@ nav img {
   border-color: var(--color-border-soft);
 }
 
+.text-on-light {
+  color : var(--color-text-soft);
+}
+
 .btn--light:hover {
   background-color: var(--color-border-strong);
   border-color: var(--color-border-strong);
@@ -653,6 +657,31 @@ nav img {
   box-shadow: var(--shadow-soft);
 }
 
+.fiche-detail__exemple-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-sm);
+}
+
+.fiche-detail__exemple-actions {
+  position: absolute;
+  top : 0px;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.fiche-detail__exemple-feedback {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.pre-body {
+  position: relative;
+}
+
 .fiche-detail__exemple {
   background-color: var(--color-surface);
   border-radius: var(--radius-lg);
@@ -661,21 +690,19 @@ nav img {
   box-shadow: var(--shadow-soft);
 }
 
-.fiche-detail__exemple > pre {
-  width: 95%;
+.fiche-detail__exemple pre {
   background-color: var(--color-surface-variant);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   padding: var(--space-lg);
   box-shadow: var(--shadow-soft);
-
   max-width: 100%;
   box-sizing: border-box;
   overflow-x: auto;
   white-space: pre;
 }
 
-.fiche-detail__exemple > pre code {
+.fiche-detail__exemple pre code {
   display: block;
   white-space: pre;
   word-break: break-word;

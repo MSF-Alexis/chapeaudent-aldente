@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { useDataSheetsStore } from "@/store/dataSheetStore";
 import { highlightHtmlExample } from '@/helpers/highlightHtmlExample'
 import FicheListView from '@/views/DataSheetListView.vue'
@@ -8,6 +8,7 @@ import BaseModal from '@/components/BaseModal.vue'
 const dataSheetStore = useDataSheetsStore();
 const isOpen = ref(false)
 const currentFiche = ref(null)
+const copyFeedback = ref('Copier le code')
 
 const handleOpenedModal = (fiche) => {
   currentFiche.value = fiche
@@ -24,6 +25,25 @@ const highlightedExample = computed(() => {
   if (!currentFiche.value) return ''
   return highlightHtmlExample(currentFiche.value.exemple)
 })
+
+const handleCopyExample = async () => {
+  if (!currentFiche.value) return
+
+  await nextTick()
+  const preEl = document.querySelector('.fiche-detail__exemple pre')
+  if (!preEl) return
+
+  const codeEl = preEl.querySelector('code')
+  const text = codeEl ? codeEl.textContent || '' : preEl.textContent || ''
+  try {
+    await navigator.clipboard.writeText(text)
+    copyFeedback.value = 'Code copié !'
+    setTimeout(() => (copyFeedback.value = 'Copier le code'), 2000)
+  } catch (e) {
+    copyFeedback.value = 'Impossible de copier'
+    setTimeout(() => (copyFeedback.value = 'Copier le code'), 2000)
+  }
+}
 
 </script>
 
@@ -47,7 +67,17 @@ const highlightedExample = computed(() => {
       <div class="fiche-detail__main">
         <article class="fiche-detail__section" v-html="currentFiche.objectif"></article>
         <article class="fiche-detail__section" v-html="currentFiche.theorie"></article>
-        <article class="fiche-detail__exemple" v-html="highlightedExample" />
+        <article class="fiche-detail__exemple">
+          <div class="pre-body">
+            <div class="fiche-detail__exemple-actions">
+              <button type="button" class="btn btn--light btn-xs text-on-light" @click="handleCopyExample">
+                {{ copyFeedback }}
+              </button>
+            </div>
+            <div v-html="highlightedExample" />
+          </div>
+
+        </article>
       </div>
 
       <aside class="fiche-detail__side">
