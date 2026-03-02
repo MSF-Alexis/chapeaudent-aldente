@@ -29,7 +29,7 @@ const handleCopyExample = async () => {
 </script>
 
 <template>
-  <BaseModal v-model="isOpen" title-id="html-modal-title">
+  <BaseModal v-model="isOpen" title-id="css-modal-title">
     <template #title>
       <div class="fiche-detail__header">
         <h2 id="html-modal-title" class="modal__title fiche-detail__title">
