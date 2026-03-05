@@ -23,7 +23,6 @@ const props = defineProps({
 
 const copyFeedback = ref('📋 Copier')
 
-// Map language to Prism
 const languageMap = {
   html: { prismLang: 'markup', prismDef: Prism.languages.markup },
   css: { prismLang: 'css', prismDef: Prism.languages.css },
@@ -35,30 +34,25 @@ const langConfig = computed(() => {
   return languageMap[props.language] || languageMap.html
 })
 
-// Decode HTML entities + escaped characters
 const decodedCode = computed(() => {
   let decoded = props.code
   
-  // Décoder les échappements JSON d'abord
   decoded = decoded
-    .replace(/\\n/g, '\n')      // \\n → vrai retour à la ligne
-    .replace(/\\"/g, '"')       // \\" → "
-    .replace(/\\'/g, "'")       // \\' → '
-    .replace(/\\\\/g, '\\')     // \\\\ → \
+    .replace(/\\n/g, '\n')
+    .replace(/\\"/g, '"')
+    .replace(/\\'/g, "'")
+    .replace(/\\\\/g, '\\')
   
-  // Ensuite décoder les entités HTML
   const textarea = document.createElement('textarea')
   textarea.innerHTML = decoded
   return textarea.value
 })
 
-// Highlight code
 const highlightedCode = computed(() => {
   const config = langConfig.value
   return Prism.highlight(decodedCode.value, config.prismDef, config.prismLang)
 })
 
-// Copy to clipboard
 const copyCode = async () => {
   try {
     await navigator.clipboard.writeText(decodedCode.value)
