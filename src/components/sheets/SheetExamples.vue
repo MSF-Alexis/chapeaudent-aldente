@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import CodeBlock from '@/components/sheets/CodeBlock.vue'
+import CodeBlock from '@/components/CodeBlock.vue'
 
 const props = defineProps({
     examples: {
