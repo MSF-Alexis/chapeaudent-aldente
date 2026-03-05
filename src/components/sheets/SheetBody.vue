@@ -2,6 +2,7 @@
 import { computed, ref, onMounted, nextTick } from 'vue'
 import { extractCodeBlocks } from '@/helpers/courseDisplayHelper'
 import InlineCode from '@/components/InlineCode.vue'
+import SheetExamples from '@/components/sheets/SheetExamples.vue'
 
 const props = defineProps({
   sheet: {
@@ -63,5 +64,6 @@ const injectCodeBlocks = () => {
         class="section-content"
       ></div>
     </section>
+    <SheetExamples v-if="sheet.examples" :examples="sheet.examples" />
   </div>
 </template>
