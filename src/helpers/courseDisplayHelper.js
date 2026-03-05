@@ -115,3 +115,39 @@ export async function copyElementValue(
     setTimeout(() => (feedBackElement.value = 'Copier le code'), 2000)
   }
 }
+
+
+/**
+ * Extrait et remplace les balises <code> par des placeholders
+ * @param {string} htmlString - Le HTML contenant des <code>
+ * @returns {Object} { processedHtml, codeBlocks }
+ */
+export function extractCodeBlocks(htmlString) {
+  if (!htmlString) return { processedHtml: '', codeBlocks: [] }
+  
+  const codeBlocks = []
+  let index = 0
+  
+  // Regex pour capturer <code>...</code> avec leur contenu
+  const processedHtml = htmlString.replace(
+    /<code>(.*?)<\/code>/gs,
+    (match, content) => {
+      // Décoder les entités HTML si nécessaire
+      const decodedContent = content
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+      
+      codeBlocks.push({
+        id: index,
+        content: decodedContent.trim()
+      })
+      
+      const placeholder = `<span data-code-block="${index}"></span>`
+      index++
+      return placeholder
+    }
+  )
+  
+  return { processedHtml, codeBlocks }
+}

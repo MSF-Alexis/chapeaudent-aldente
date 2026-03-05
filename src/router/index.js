@@ -15,7 +15,7 @@ const router = createRouter({
     { path: '/js', name: 'js-list', component: JSListView },
     { path: '/integration', name: 'integration-list', component: IntegrationListView },
     // { path: '/html', name: 'html-list', component: HtmlListView },
-    { path: '/fiche/:id', name: 'html-sheet', component: SheetView, props: true },
+    { path: '/fiche/:slug', name: 'html-sheet', component: SheetView, props: true },
     // { path: '/:pathMatch(.*)*', redirect: '/' }
   ]
 })
