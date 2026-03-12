@@ -91,12 +91,6 @@
     margin-bottom: var(--space-lg);
 }
 
-.sheet-sequence {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-    font-weight: 500;
-}
-
 /* Type badge variants */
 .pill--type {
     font-weight: 700;

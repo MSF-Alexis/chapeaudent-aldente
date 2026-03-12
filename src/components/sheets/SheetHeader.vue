@@ -44,9 +44,6 @@ const levelDataAttr = computed(() => {
             <span class="pill pill--level" :data-level="levelDataAttr">
                 {{ sheet.level }}
             </span>
-            <span class="sheet-sequence">
-                {{ sheet.sequenceId }} • Position {{ sheet.sequencePosition }}
-            </span>
         </div>
 
         <div v-if="sheet.prerequisites?.length" class="sheet-prerequisites">
