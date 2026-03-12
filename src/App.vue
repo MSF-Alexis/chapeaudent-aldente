@@ -9,7 +9,7 @@ import logo from '@/assets/logo.png';
       <nav class="app-nav">
         <RouterLink to="/" class="app-nav__brand">
           <img :src="logo" alt="">
-          Chapeaudent
+          Chapeaudents
         </RouterLink>
 
         <ul class="app-nav__links">
