@@ -13,7 +13,7 @@ const props = defineProps({
   }
 })
 
-// Process theory content
+
 const theoryData = computed(() => {
   if (!props.sheet.theory) return null
   return extractCodeBlocks(props.sheet.theory)
@@ -21,7 +21,7 @@ const theoryData = computed(() => {
 
 const theoryRef = ref(null)
 
-// Inject CodeBlock components after DOM update
+
 onMounted(async () => {
   await nextTick()
   injectCodeBlocks()
@@ -37,12 +37,12 @@ const injectCodeBlocks = () => {
     const codeBlock = theoryData.value.codeBlocks[blockId]
 
     if (codeBlock) {
-      // Créer le code inline
+      
       const codeEl = document.createElement('code')
       codeEl.className = 'inline-code'
       codeEl.textContent = codeBlock.content
 
-      // Remplacer le placeholder
+      
       placeholder.replaceWith(codeEl)
     }
   })
@@ -51,13 +51,13 @@ const injectCodeBlocks = () => {
 
 <template>
   <div class="sheet-body">
-    <!-- WHY Section -->
+    
     <section v-if="sheet.why" class="sheet-section sheet-section--why">
       <h2 class="section-title">💡 Pourquoi ?</h2>
       <div v-html="sheet.why" class="section-content"></div>
     </section>
 
-    <!-- THEORY Section -->
+    
     <section v-if="theoryData" class="sheet-section sheet-section--theory">
       <h2 class="section-title">📚 Théorie</h2>
       <div ref="theoryRef" v-html="theoryData.processedHtml" class="section-content"></div>

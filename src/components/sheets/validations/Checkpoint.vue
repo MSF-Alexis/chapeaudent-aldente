@@ -15,14 +15,14 @@ const isSelfValidated = ref(null)
 
 const hasAnswer = computed(() => userAnswer.value.trim().length > 0)
 
-// Parser pour la question et la réponse
+
 const questionData = computed(() => extractCodeBlocks(props.checkpoint.question))
 const answerData = computed(() => extractCodeBlocks(props.checkpoint.answer))
 
 const questionRef = ref(null)
 const answerRef = ref(null)
 
-// Injection des blocs inline
+
 const injectCodeBlocks = (containerRef, codeBlocks) => {
   if (!containerRef.value || !codeBlocks?.length) return
 
@@ -41,13 +41,13 @@ const injectCodeBlocks = (containerRef, codeBlocks) => {
   })
 }
 
-// Injecter dans la question au montage
+
 onMounted(async () => {
   await nextTick()
   injectCodeBlocks(questionRef, questionData.value?.codeBlocks)
 })
 
-// Injecter dans la réponse quand elle est révélée
+
 watch(isRevealed, async (val) => {
   if (val) {
     await nextTick()
@@ -74,14 +74,14 @@ const reset = () => {
   <section class="sheet-section sheet-section--checkpoint">
     <h2 class="section-title">✍️ Checkpoint</h2>
 
-    <!-- Question parsée -->
+    
     <p
       ref="questionRef"
       v-html="questionData.processedHtml"
       class="checkpoint-question section-content"
     ></p>
 
-    <!-- Textarea réponse -->
+    
     <div class="checkpoint-input-wrap" v-if="isSelfValidated === null">
       <textarea
         v-model="userAnswer"
@@ -103,21 +103,21 @@ const reset = () => {
       </div>
     </div>
 
-    <!-- Correction -->
+    
     <Transition name="fade">
       <div v-if="isRevealed && isSelfValidated === null" class="checkpoint-correction">
         <div class="checkpoint-correction__header">
           <span class="checkpoint-correction__label">📋 Correction</span>
         </div>
 
-        <!-- Réponse parsée -->
+        
         <div
           ref="answerRef"
           v-html="answerData.processedHtml"
           class="checkpoint-correction__content section-content"
         ></div>
 
-        <!-- Auto-évaluation -->
+        
         <div class="checkpoint-self-eval">
           <p class="checkpoint-self-eval__question">
             Est-ce que votre réponse correspond ?

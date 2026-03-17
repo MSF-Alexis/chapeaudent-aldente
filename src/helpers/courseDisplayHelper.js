@@ -128,11 +128,11 @@ export function extractCodeBlocks(htmlString) {
   const codeBlocks = []
   let index = 0
   
-  // Regex pour capturer <code>...</code> avec leur contenu
+  
   const processedHtml = htmlString.replace(
     /<code>(.*?)<\/code>/gs,
     (match, content) => {
-      // Décoder les entités HTML si nécessaire
+      
       const decodedContent = content
         .replace(/&lt;/g, '<')
         .replace(/&gt;/g, '>')

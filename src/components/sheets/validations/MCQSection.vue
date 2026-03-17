@@ -1,5 +1,6 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick, watch } from 'vue'
+import { extractCodeBlocks } from '@/helpers/courseDisplayHelper'
 
 const props = defineProps({
   mcq: {
@@ -8,9 +9,8 @@ const props = defineProps({
   }
 })
 
-
 const answers = ref(props.mcq.map(() => null))
-
+const explanationRefs = ref([])
 
 const selectAnswer = (questionIndex, optionIndex) => {
   if (answers.value[questionIndex] !== null) return
@@ -20,14 +20,47 @@ const selectAnswer = (questionIndex, optionIndex) => {
 const getOptionStatus = (questionIndex, optionIndex) => {
   const answered = answers.value[questionIndex]
   if (answered === null) return 'default'
-
   const correctIndex = props.mcq[questionIndex].answerIndex
-
   if (optionIndex === correctIndex) return 'correct'
   if (optionIndex === answered && answered !== correctIndex) return 'wrong'
   return 'default'
 }
 
+
+const parsedExplanations = computed(() => {
+  return props.mcq.map(q => extractCodeBlocks(q.explanation))
+})
+
+
+const injectExplanationCodes = async (qIndex) => {
+  await nextTick()
+  const el = explanationRefs.value[qIndex]
+  if (!el) return
+
+  const codeBlocks = parsedExplanations.value[qIndex]?.codeBlocks
+  if (!codeBlocks?.length) return
+
+  const placeholders = el.querySelectorAll('[data-code-block]')
+  placeholders.forEach((placeholder) => {
+    const blockId = parseInt(placeholder.dataset.codeBlock)
+    const codeBlock = codeBlocks[blockId]
+    if (codeBlock) {
+      const codeEl = document.createElement('code')
+      codeEl.className = 'inline-code'
+      codeEl.textContent = codeBlock.content
+      placeholder.replaceWith(codeEl)
+    }
+  })
+}
+
+
+watch(answers, (newAnswers) => {
+  newAnswers.forEach((answer, qIndex) => {
+    if (answer !== null) {
+      injectExplanationCodes(qIndex)
+    }
+  })
+}, { deep: true })
 
 const score = computed(() => {
   return answers.value.filter(
@@ -39,7 +72,6 @@ const allAnswered = computed(() => {
   return answers.value.every(a => a !== null)
 })
 
-
 const reset = () => {
   answers.value = props.mcq.map(() => null)
 }
@@ -50,26 +82,15 @@ const reset = () => {
     <h2 class="section-title">🧠 QCM</h2>
 
     <div class="mcq-list">
-      <div
-        v-for="(question, qIndex) in mcq"
-        :key="qIndex"
-        class="mcq-question"
-      >
-        
+      <div v-for="(question, qIndex) in mcq" :key="qIndex" class="mcq-question">
         <p class="mcq-question__text">
           <span class="mcq-question__number">{{ qIndex + 1 }}.</span>
           {{ question.question }}
         </p>
 
-        
         <ul class="mcq-options">
-          <li
-            v-for="(option, oIndex) in question.options"
-            :key="oIndex"
-            class="mcq-option"
-            :class="`mcq-option--${getOptionStatus(qIndex, oIndex)}`"
-            @click="selectAnswer(qIndex, oIndex)"
-          >
+          <li v-for="(option, oIndex) in question.options" :key="oIndex" class="mcq-option"
+            :class="`mcq-option--${getOptionStatus(qIndex, oIndex)}`" @click="selectAnswer(qIndex, oIndex)">
             <span class="mcq-option__letter">{{ ['A', 'B', 'C', 'D'][oIndex] }}</span>
             <span class="mcq-option__text">{{ option.text }}</span>
             <span v-if="getOptionStatus(qIndex, oIndex) === 'correct'" class="mcq-option__icon">✅</span>
@@ -77,20 +98,17 @@ const reset = () => {
           </li>
         </ul>
 
-        
         <Transition name="fade">
-          <div
-            v-if="answers[qIndex] !== null"
-            class="mcq-explanation"
-            :class="answers[qIndex] === question.answerIndex ? 'mcq-explanation--correct' : 'mcq-explanation--wrong'"
-          >
-            <p class="mcq-explanation__text">💬 {{ question.explanation }}</p>
+          <div v-if="answers[qIndex] !== null" class="mcq-explanation"
+            :class="answers[qIndex] === question.answerIndex ? 'mcq-explanation--correct' : 'mcq-explanation--wrong'">
+            
+            <p :ref="el => explanationRefs[qIndex] = el" v-html="'💬 ' + parsedExplanations[qIndex].processedHtml"
+              class="mcq-explanation__text"></p>
           </div>
         </Transition>
       </div>
     </div>
 
-    
     <Transition name="fade">
       <div v-if="allAnswered" class="mcq-score">
         <p class="mcq-score__text">
@@ -103,6 +121,7 @@ const reset = () => {
     </Transition>
   </section>
 </template>
+
 
 <style scoped>
 .sheet-section--mcq {
