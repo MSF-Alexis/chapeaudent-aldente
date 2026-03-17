@@ -8,7 +8,6 @@ const props = defineProps({
         required: true
     }
 })
-console.log('📦 CodeBlock props:', props)
 const activeExampleIndex = ref(0)
 
 const selectExample = (index) => {
@@ -20,7 +19,7 @@ const selectExample = (index) => {
     <section v-if="examples?.length" class="sheet-section sheet-section--examples">
         <h2 class="section-title">💻 Exemples</h2>
 
-        <!-- Tabs si plusieurs exemples -->
+        
         <div v-if="examples.length > 1" class="example-tabs">
             <button v-for="(example, index) in examples" :key="example.id" @click="selectExample(index)"
                 :class="['example-tab', { 'example-tab--active': activeExampleIndex === index }]">
@@ -28,18 +27,18 @@ const selectExample = (index) => {
             </button>
         </div>
 
-        <!-- Active example content -->
+        
         <div v-if="examples[activeExampleIndex]" class="example-content">
-            <!-- Title si un seul exemple -->
+            
             <h3 v-if="examples.length === 1" class="example-title">
                 {{ examples[activeExampleIndex].title }}
             </h3>
 
-            <!-- Description -->
+            
             <div v-if="examples[activeExampleIndex].description" v-html="examples[activeExampleIndex].description"
                 class="example-description"></div>
 
-            <!-- Code blocks -->
+            
             <div class="code-blocks">
                 <CodeBlock v-for="(block, idx) in examples[activeExampleIndex].blocks" :key="idx" :code="block.code"
                     :language="block.language" :label="block.label" />
@@ -53,7 +52,7 @@ const selectExample = (index) => {
     border-left: 4px solid var(--color-integration);
 }
 
-/* Tabs */
+
 .example-tabs {
     display: flex;
     gap: var(--space-xs);
@@ -87,7 +86,7 @@ const selectExample = (index) => {
     font-weight: 600;
 }
 
-/* Content */
+
 .example-content {
     display: flex;
     flex-direction: column;
@@ -116,7 +115,7 @@ const selectExample = (index) => {
     gap: var(--space-md);
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
     .example-tabs {
         overflow-x: auto;

@@ -2,6 +2,8 @@
 import { computed, ref, onMounted, nextTick } from 'vue'
 import { extractCodeBlocks } from '@/helpers/courseDisplayHelper'
 import InlineCode from '@/components/InlineCode.vue'
+import McqSection from '@/components/sheets/validations/MCQSection.vue'
+import Checkpoint from '@/components/sheets/validations/Checkpoint.vue'
 import SheetExamples from '@/components/sheets/SheetExamples.vue'
 
 const props = defineProps({
@@ -27,19 +29,19 @@ onMounted(async () => {
 
 const injectCodeBlocks = () => {
   if (!theoryRef.value || !theoryData.value) return
-  
+
   const placeholders = theoryRef.value.querySelectorAll('[data-code-block]')
-  
+
   placeholders.forEach((placeholder) => {
     const blockId = parseInt(placeholder.dataset.codeBlock)
     const codeBlock = theoryData.value.codeBlocks[blockId]
-    
+
     if (codeBlock) {
       // Créer le code inline
       const codeEl = document.createElement('code')
       codeEl.className = 'inline-code'
       codeEl.textContent = codeBlock.content
-      
+
       // Remplacer le placeholder
       placeholder.replaceWith(codeEl)
     }
@@ -58,12 +60,13 @@ const injectCodeBlocks = () => {
     <!-- THEORY Section -->
     <section v-if="theoryData" class="sheet-section sheet-section--theory">
       <h2 class="section-title">📚 Théorie</h2>
-      <div 
-        ref="theoryRef"
-        v-html="theoryData.processedHtml" 
-        class="section-content"
-      ></div>
+      <div ref="theoryRef" v-html="theoryData.processedHtml" class="section-content"></div>
     </section>
     <SheetExamples v-if="sheet.examples" :examples="sheet.examples" />
+    <McqSection v-if="sheet.validation?.mcq?.length" :mcq="sheet.validation.mcq" />
+     <Checkpoint
+      v-if="sheet.validation?.checkpoint"
+      :checkpoint="sheet.validation.checkpoint"
+    />
   </div>
 </template>
