@@ -1,10 +1,12 @@
 <script setup>
 import { computed, ref, onMounted, nextTick } from 'vue'
 import { extractCodeBlocks } from '@/helpers/courseDisplayHelper'
-import InlineCode from '@/components/InlineCode.vue'
-import McqSection from '@/components/sheets/validations/MCQSection.vue'
+import McqSection from '@/components/sheets/validations/MCQ.vue'
 import Checkpoint from '@/components/sheets/validations/Checkpoint.vue'
 import SheetExamples from '@/components/sheets/SheetExamples.vue'
+import FillTheGap from '@/components/sheets/validations/FillTheGap.vue'
+import SpotTheBug from '@/components/sheets/validations/SpotTheBug.vue'
+
 
 const props = defineProps({
   sheet: {
@@ -37,12 +39,12 @@ const injectCodeBlocks = () => {
     const codeBlock = theoryData.value.codeBlocks[blockId]
 
     if (codeBlock) {
-      
+
       const codeEl = document.createElement('code')
       codeEl.className = 'inline-code'
       codeEl.textContent = codeBlock.content
 
-      
+
       placeholder.replaceWith(codeEl)
     }
   })
@@ -51,22 +53,21 @@ const injectCodeBlocks = () => {
 
 <template>
   <div class="sheet-body">
-    
+
     <section v-if="sheet.why" class="sheet-section sheet-section--why">
       <h2 class="section-title">💡 Pourquoi ?</h2>
       <div v-html="sheet.why" class="section-content"></div>
     </section>
 
-    
+
     <section v-if="theoryData" class="sheet-section sheet-section--theory">
       <h2 class="section-title">📚 Théorie</h2>
       <div ref="theoryRef" v-html="theoryData.processedHtml" class="section-content"></div>
     </section>
     <SheetExamples v-if="sheet.examples" :examples="sheet.examples" />
     <McqSection v-if="sheet.validation?.mcq?.length" :mcq="sheet.validation.mcq" />
-     <Checkpoint
-      v-if="sheet.validation?.checkpoint"
-      :checkpoint="sheet.validation.checkpoint"
-    />
+    <Checkpoint v-if="sheet.validation?.checkpoint" :checkpoint="sheet.validation.checkpoint" />
+    <FillTheGap v-if="sheet.validation?.fillTheGap" :fill-the-gap="sheet.validation.fillTheGap" />
+    <SpotTheBug v-if="sheet.validation?.spotTheBug" :spot-the-bug="sheet.validation.spotTheBug" />
   </div>
 </template>
