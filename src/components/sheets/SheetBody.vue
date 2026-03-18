@@ -77,7 +77,6 @@ const injectCodeBlocks = () => {
 </template>
 
 <style scoped>
-/* Style générique pour tous les liens dans une fiche */
 .sheet-body :deep(a) {
   color: var(--color-primary);
   text-decoration: underline;
@@ -90,7 +89,6 @@ const injectCodeBlocks = () => {
   color: var(--color-primary-strong, #1d4ed8);
 }
 
-/* Variante spécifique pour la section Sources (si tu veux la garder) */
 .section-content--sources :deep(a) {
   color: var(--color-primary);
 }

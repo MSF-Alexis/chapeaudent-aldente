@@ -391,5 +391,5 @@
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 0.9em;
   border: 1px solid var(--color-border);
-  white-space: nowrap;
+  white-space: wrap;
 }

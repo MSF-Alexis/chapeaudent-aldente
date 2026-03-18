@@ -8,8 +8,7 @@ const props = defineProps({
   }
 })
 
-// On laisse Prism/CodeBlock gérer la coloration via ton composant global,
-// ici on affiche simplement du code en <pre><code>.
+
 const hasErrors = computed(() => props.spotTheBug.errors?.length > 0)
 </script>
 
@@ -17,12 +16,12 @@ const hasErrors = computed(() => props.spotTheBug.errors?.length > 0)
   <section class="sheet-section sheet-section--spot">
     <h2 class="section-title">🐛 Spot the bug</h2>
 
-    <!-- Consigne -->
+    
     <p class="spot-guideline">
       Le code ci-dessous contient une ou plusieurs erreurs. Identifie-les, puis compare avec la correction.
     </p>
 
-    <!-- Code buggé -->
+    
     <div class="spot-block">
       <div class="spot-block__header">
         <span class="spot-block__label">Code à corriger</span>
@@ -30,7 +29,7 @@ const hasErrors = computed(() => props.spotTheBug.errors?.length > 0)
       <pre class="spot-code"><code>{{ spotTheBug.buggedCode }}</code></pre>
     </div>
 
-    <!-- Liste d’erreurs attendues -->
+    
     <div v-if="hasErrors" class="spot-errors">
       <h3 class="spot-errors__title">🔍 Problèmes à détecter</h3>
       <ul class="spot-errors__list">
@@ -44,7 +43,7 @@ const hasErrors = computed(() => props.spotTheBug.errors?.length > 0)
       </ul>
     </div>
 
-    <!-- Code corrigé -->
+    
     <div class="spot-block spot-block--fixed">
       <div class="spot-block__header">
         <span class="spot-block__label">Code corrigé</span>
@@ -65,7 +64,7 @@ const hasErrors = computed(() => props.spotTheBug.errors?.length > 0)
   color: var(--color-text-soft);
 }
 
-/* Blocs code */
+
 
 .spot-block {
   border: 1px solid var(--color-border);
@@ -104,7 +103,7 @@ const hasErrors = computed(() => props.spotTheBug.errors?.length > 0)
   overflow-x: auto;
 }
 
-/* Erreurs */
+
 
 .spot-errors {
   margin-bottom: var(--space-lg);
