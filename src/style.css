@@ -526,8 +526,6 @@ nav img {
   color: var(--color-text-muted);
 }
 
-/* MODAL */
-
 .modal-backdrop {
   position: fixed;
   inset: 0;
