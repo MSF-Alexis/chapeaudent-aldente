@@ -17,7 +17,7 @@ export function useSheets() {
     try {
       const response = await fetch(`${baseUrl}/sheet/${sheetSlug}`)
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
-
+      
       const sheet = await response.json()
       sheetsCache.value.set(sheetSlug, sheet)
       return sheet
@@ -34,11 +34,11 @@ export function useSheets() {
     try {
       const response = await fetch(`${baseUrl}/api/sheets`)
       const sheets = await response.json()
-
+      
       sheets.forEach(sheet => {
         sheetsCache.value.set(sheet.slug, sheet)
       })
-
+      
       return sheets
     } catch (err) {
       error.value = err
