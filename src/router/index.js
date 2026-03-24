@@ -1,21 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/Home.vue'
-import HtmlListView from '@/views/html/ListView.vue'
-import JSListView from '@/views/js/ListView.vue'
-import CSSListView from '@/views/css/ListView.vue'
-import IntegrationListView from '@/views/integration/ListView.vue'
-import SheetView from '@/components/SheetView.vue'
+import SheetView from '@/views/sheets/SheetView.vue'
+import SequenceList from '@/views/sequences/SequenceList.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', name: 'home', component: HomeView },
-    { path: '/html', name: 'html-list', component: HtmlListView },
-    { path: '/css', name: 'css-list', component: CSSListView },
-    { path: '/js', name: 'js-list', component: JSListView },
-    { path: '/integration', name: 'integration-list', component: IntegrationListView },
-    // { path: '/html', name: 'html-list', component: HtmlListView },
-    { path: '/fiche/:slug', name: 'html-sheet', component: SheetView, props: true },
+    { path: '/fiche/:slug', name: 'sheets', component: SheetView, props: true },
+    { path: '/parcours', name: 'sequences', component: SequenceList }
     // { path: '/:pathMatch(.*)*', redirect: '/' }
   ]
 })

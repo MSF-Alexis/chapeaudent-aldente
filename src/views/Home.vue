@@ -1,6 +1,5 @@
 <script setup>
-import { useDataSheetsStore } from "@/store/dataSheetStore";
-const dataSheetStore = useDataSheetsStore();
+
 </script>
 
 <template>
@@ -41,7 +40,7 @@ const dataSheetStore = useDataSheetsStore();
                     </p>
 
                     <ul class="domain-card__meta">
-                        <li><strong>Fiches :</strong> {{ dataSheetStore.html.length }}</li>
+                        <li><strong>Fiches :</strong> {{ 0 }}</li>
                         <li><strong>Niveaux :</strong> Initial → Expert</li>
                         <li><strong>Compétences clés :</strong> structure de page, formulaires, tableaux, accessibilité.
                         </li>
@@ -62,7 +61,7 @@ const dataSheetStore = useDataSheetsStore();
                     </p>
 
                     <ul class="domain-card__meta">
-                        <li><strong>Fiches :</strong> {{ dataSheetStore.css.length }}</li>
+                        <li><strong>Fiches :</strong> {{ 0 }}</li>
                         <li><strong>Niveaux :</strong> Initial → Expert</li>
                         <li><strong>Compétences clés :</strong> box model, Flexbox, Grid, media queries.</li>
                     </ul>
@@ -82,7 +81,7 @@ const dataSheetStore = useDataSheetsStore();
                     </p>
 
                     <ul class="domain-card__meta">
-                        <li><strong>Fiches :</strong> {{ dataSheetStore.js.length }}</li>
+                        <li><strong>Fiches :</strong> {{ 0 }}</li>
                         <li><strong>Niveaux :</strong> Initial → Expert</li>
                         <li><strong>Compétences clés :</strong> DOM, événements, tableaux, fonctions, async/await.</li>
                     </ul>
@@ -102,7 +101,7 @@ const dataSheetStore = useDataSheetsStore();
                     </p>
 
                     <ul class="domain-card__meta">
-                        <li><strong>Fiches :</strong> {{ dataSheetStore.integration.length }}</li>
+                        <li><strong>Fiches :</strong> {{ 0 }}</li>
                         <li><strong>Niveaux :</strong> Initial → Expert</li>
                         <li><strong>Compétences clés :</strong> structure de projet, bonnes pratiques, a11y,
                             performances.</li>
@@ -113,40 +112,6 @@ const dataSheetStore = useDataSheetsStore();
                             Explorer les fiches d’intégration
                         </RouterLink>
                     </div>
-                </article>
-            </div>
-        </section>
-
-        <section class="home-section home-section--alt">
-            <h2>Entrer par niveau</h2>
-            <p class="home-section__intro">
-                Tu peux aussi suivre les fiches dans l’ordre pédagogique,
-                en fonction de ton niveau actuel.
-            </p>
-
-            <div class="level-grid">
-                <article class="level-card">
-                    <h3>Débutant</h3>
-                    <p>Découvrir les bases : HTML, CSS et JavaScript avec des fiches “Initial” et “Basique”.</p>
-                    <RouterLink class="btn btn--light" to="/parcours/debutant">
-                        Parcours débutant
-                    </RouterLink>
-                </article>
-
-                <article class="level-card">
-                    <h3>Intermédiaire</h3>
-                    <p>Approfondir avec des fiches “Opérationnel” : layouts, DOM, formulaires, accessibilité.</p>
-                    <RouterLink class="btn btn--light" to="/parcours/intermediaire">
-                        Parcours intermédiaire
-                    </RouterLink>
-                </article>
-
-                <article class="level-card">
-                    <h3>Avancé / Expert</h3>
-                    <p>Explorer les sujets avancés : animations, patterns JS, performance, architectures CSS.</p>
-                    <RouterLink class="btn btn--light" to="/parcours/avance">
-                        Parcours avancé
-                    </RouterLink>
                 </article>
             </div>
         </section>
