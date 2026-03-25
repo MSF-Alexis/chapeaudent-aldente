@@ -14,22 +14,22 @@ import logo from '@/assets/logo.png';
 
         <ul class="app-nav__links">
           <li>
-            <RouterLink to="/html" class="app-nav__link">
+            <RouterLink to="" class="app-nav__link">
               HTML
             </RouterLink>
           </li>
           <li>
-            <RouterLink to="/css" class="app-nav__link">
+            <RouterLink to="" class="app-nav__link">
               CSS
             </RouterLink>
           </li>
           <li>
-            <RouterLink to="/js" class="app-nav__link">
+            <RouterLink to="" class="app-nav__link">
               JavaScript
             </RouterLink>
           </li>
           <li>
-            <RouterLink to="/integration" class="app-nav__link">
+            <RouterLink to="" class="app-nav__link">
               Intégration
             </RouterLink>
           </li>

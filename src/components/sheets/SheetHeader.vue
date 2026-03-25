@@ -50,7 +50,7 @@ const levelDataAttr = computed(() => {
             <strong class="prerequisites-label">Prérequis :</strong>
             <div class="prerequisites-list">
                 <RouterLink v-for="prereqSheetSlug in sheet.prerequisites" :key="prereqSheetSlug"
-                    :to="{ name: 'html-sheet', params: { slug: prereqSheetSlug } }" class="prereq-link">
+                    :to="{ name: 'sheets-view', params: { slug: prereqSheetSlug } }" class="prereq-link">
                     {{ prereqSheetSlug }}
                 </RouterLink>
             </div>

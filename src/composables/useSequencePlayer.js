@@ -1,20 +1,22 @@
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
 
 const STORAGE_PREFIX = 'progression-'
 
-export function useSequencePlayer(sequence) {
-    const router = useRouter()
+export function useSequencePlayer(sequence, router) {
 
+    // ─── Reconstruction de la liste ordonnée ──────────────────
     const orderedNodes = computed(() => {
         if (!sequence?.nodes || !sequence?.firstNodeId) return []
 
-        const nodeMap = Object.fromEntries(sequence.nodes.map(n => [n.id, n]))
+        const map = Object.fromEntries(sequence.nodes.map(n => [n.id, n]))
         const result = []
         let currentId = sequence.firstNodeId
 
-        while (currentId && nodeMap[currentId]) {
-            const node = nodeMap[currentId]
+        const seen = new Set()
+
+        while (currentId && map[currentId] && !seen.has(currentId)) {
+            seen.add(currentId)
+            const node = map[currentId]
             result.push(node)
             currentId = node.nextNodeId ?? null
         }
@@ -24,24 +26,31 @@ export function useSequencePlayer(sequence) {
 
     const totalSteps = computed(() => orderedNodes.value.length)
 
+    // ─── Progression (localStorage) ───────────────────────────
     const storageKey = `${STORAGE_PREFIX}${sequence?.slug}`
 
     const loadProgression = () => {
         try {
             const raw = localStorage.getItem(storageKey)
-            return raw ? JSON.parse(raw) : { completedSteps: [], lastStep: 0 }
+            if (!raw) return { completedSteps: [], lastStep: 0 }
+            const parsed = JSON.parse(raw)
+            return {
+                completedSteps: Array.isArray(parsed.completedSteps) ? parsed.completedSteps : [],
+                lastStep: typeof parsed.lastStep === 'number' ? parsed.lastStep : 0,
+            }
         } catch {
             return { completedSteps: [], lastStep: 0 }
         }
     }
 
-    const saveProgression = (progression) => {
-        localStorage.setItem(storageKey, JSON.stringify(progression))
+    const saveProgression = (p) => {
+        localStorage.setItem(storageKey, JSON.stringify(p))
     }
 
     const progression = ref(loadProgression())
 
     const markStepCompleted = (index) => {
+        if (index < 0 || index >= totalSteps.value) return
         if (!progression.value.completedSteps.includes(index)) {
             progression.value.completedSteps.push(index)
         }
@@ -51,31 +60,37 @@ export function useSequencePlayer(sequence) {
         saveProgression(progression.value)
     }
 
-    const isStepCompleted = (index) => {
-        return progression.value.completedSteps.includes(index)
-    }
+    const isStepCompleted = (index) => progression.value.completedSteps.includes(index)
 
     const resetProgression = () => {
         progression.value = { completedSteps: [], lastStep: 0 }
         localStorage.removeItem(storageKey)
     }
 
+    // ─── Navigation ───────────────────────────────────────────
     const navigateTo = (index) => {
         const node = orderedNodes.value[index]
-        if (!node) return
+        if (!node || !node.targetSlug || !sequence?.slug) return
 
         router.push({
-            name: 'sheets-view',
+            name: 'sheets-view',             // ton nom de route actuel
             params: { slug: node.targetSlug },
             query: {
                 parcours: sequence.slug,
-                step: index
-            }
+                step: index,
+            },
         })
     }
 
     const start = () => {
-        navigateTo(progression.value.lastStep)
+        // si progression lastStep est hors bornes, on repart de 0
+        const index =
+            progression.value.lastStep >= 0 &&
+                progression.value.lastStep < totalSteps.value
+                ? progression.value.lastStep
+                : 0
+
+        navigateTo(index)
     }
 
     const goTo = (index) => {
@@ -91,10 +106,11 @@ export function useSequencePlayer(sequence) {
         goTo(currentIndex - 1)
     }
 
+    // ─── Helpers ───────────────────────────────────────────────
     const getNodeAt = (index) => orderedNodes.value[index] ?? null
 
     const findIndexBySlug = (slug) => {
-        return orderedNodes.value.findIndex(n => n.targetSlug === slug)
+        return orderedNodes.value.findIndex((n) => n.targetSlug === slug)
     }
 
     return {

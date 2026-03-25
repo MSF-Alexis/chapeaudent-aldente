@@ -13,10 +13,10 @@
                 </p>
 
                 <div class="home-hero__actions">
-                    <RouterLink class="btn btn--primary" to="/parcours/debutant">
+                    <RouterLink class="btn btn--primary" to="">
                         Commencer le parcours débutant
                     </RouterLink>
-                    <RouterLink class="btn btn--ghost" to="/html">
+                    <RouterLink class="btn btn--ghost" to="">
                         Voir toutes les fiches HTML
                     </RouterLink>
                 </div>

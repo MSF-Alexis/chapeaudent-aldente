@@ -9,8 +9,9 @@ const error = ref(null)
 export function useSequences() {
 
     const fetchSequence = async (slug) => {
-        if (sequencesCache.value.has(slug)) {
-            return sequencesCache.value.get(slug)
+        const cached = sequencesCache.value.get(slug)
+        if (cached && cached.nodes?.length && cached.nodes[0].title) {
+            return cached
         }
 
         loading.value = true

@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { RouterLink } from 'vue-router'
 import { useSequences } from '@/composables/useSequences'
 import "@/assets/styles/sequenceList.css"
 
