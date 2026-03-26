@@ -33,7 +33,6 @@ const processedGuideline = computed(() => {
     .replace(/<code /g, '<code class="inline-code" ')
 })
 
-// Découpe chaque ligne en segments texte | blank
 const parsedLines = computed(() => {
   const lines = props.fillTheGap.codeTemplate.split('\n')
   const blanks = props.fillTheGap.blanks

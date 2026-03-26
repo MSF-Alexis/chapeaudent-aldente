@@ -47,7 +47,6 @@ const loadSequenceContext = async () => {
 
   player = useSequencePlayer(sequence.value, router)
 
-  // Priorité au query param step s'il est valide
   const stepParam = route.query.step
   let indexFromStep = null
   if (typeof stepParam === 'string') {
@@ -55,7 +54,6 @@ const loadSequenceContext = async () => {
     if (!Number.isNaN(parsed)) indexFromStep = parsed
   }
 
-  // Sinon, retrouver l’index par slug de fiche
   const indexFromSlug =
     player.findIndexBySlug(route.params.slug)
 
@@ -67,7 +65,6 @@ const loadSequenceContext = async () => {
   currentStepIndex.value = resolvedIndex >= 0 ? resolvedIndex : null
 }
 
-// ─── Navigation liste par type (comportement existant) ─────
 const goBack = () => {
   if (sheet.value?.type) {
     router.push(`/${sheet.value.type}`)
@@ -76,7 +73,6 @@ const goBack = () => {
   }
 }
 
-// ─── Navigation dans le parcours ───────────────────────────
 const goToStep = (index) => {
   if (!player || !sequence.value) return
   if (index < 0 || index >= player.totalSteps.value) return

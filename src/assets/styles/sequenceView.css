@@ -1,4 +1,4 @@
-/* ─── Layout ───────────────────────────────────────────────── */
+
 
 .sequence-view {
   min-height: 100vh;
@@ -19,7 +19,7 @@
   gap: var(--space-lg);
 }
 
-/* ─── Header ───────────────────────────────────────────────── */
+
 
 .sequence-view__header {
   background: radial-gradient(circle at top left, #e0f2fe, var(--color-bg) 40%);
@@ -56,7 +56,7 @@
   max-width: 50vw;
 }
 
-/* ─── Stats ────────────────────────────────────────────────── */
+
 
 .sequence-view__stats {
   display: flex;
@@ -89,7 +89,7 @@
   margin-top: 2px;
 }
 
-/* ─── Actions ──────────────────────────────────────────────── */
+
 
 .sequence-view__actions {
   display: flex;
@@ -97,7 +97,7 @@
   gap: var(--space-md);
 }
 
-/* ─── Stepper ──────────────────────────────────────────────── */
+
 
 .sequence-view__steps {
   padding: var(--space-3xl) var(--space-xl);
@@ -200,7 +200,7 @@
   color: var(--color-text-main);
 }
 
-/* ─── Responsive ───────────────────────────────────────────── */
+
 
 @media (max-width: 768px) {
   .sequence-view__header-inner,

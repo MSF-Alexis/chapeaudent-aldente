@@ -4,7 +4,6 @@ const STORAGE_PREFIX = 'progression-'
 
 export function useSequencePlayer(sequence, router) {
 
-    // ─── Reconstruction de la liste ordonnée ──────────────────
     const orderedNodes = computed(() => {
         if (!sequence?.nodes || !sequence?.firstNodeId) return []
 
@@ -26,7 +25,6 @@ export function useSequencePlayer(sequence, router) {
 
     const totalSteps = computed(() => orderedNodes.value.length)
 
-    // ─── Progression (localStorage) ───────────────────────────
     const storageKey = `${STORAGE_PREFIX}${sequence?.slug}`
 
     const loadProgression = () => {
@@ -67,13 +65,12 @@ export function useSequencePlayer(sequence, router) {
         localStorage.removeItem(storageKey)
     }
 
-    // ─── Navigation ───────────────────────────────────────────
     const navigateTo = (index) => {
         const node = orderedNodes.value[index]
         if (!node || !node.targetSlug || !sequence?.slug) return
 
         router.push({
-            name: 'sheets-view',             // ton nom de route actuel
+            name: 'sheets-view',
             params: { slug: node.targetSlug },
             query: {
                 parcours: sequence.slug,
@@ -83,7 +80,6 @@ export function useSequencePlayer(sequence, router) {
     }
 
     const start = () => {
-        // si progression lastStep est hors bornes, on repart de 0
         const index =
             progression.value.lastStep >= 0 &&
                 progression.value.lastStep < totalSteps.value
@@ -106,7 +102,6 @@ export function useSequencePlayer(sequence, router) {
         goTo(currentIndex - 1)
     }
 
-    // ─── Helpers ───────────────────────────────────────────────
     const getNodeAt = (index) => orderedNodes.value[index] ?? null
 
     const findIndexBySlug = (slug) => {
