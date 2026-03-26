@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, watch, computed, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { useSheets } from '@/composables/useSheets'
@@ -66,8 +66,8 @@ const loadSequenceContext = async () => {
 }
 
 const goBack = () => {
-  if (sheet.value?.type) {
-    router.push(`/${sheet.value.type}`)
+  if (hasSequenceContext.value) {
+    router.push(`/parcours/${sequence.value.slug}`)
   } else {
     router.push('/')
   }
@@ -85,9 +85,23 @@ const goPrevStep = () => {
   goToStep(currentStepIndex.value - 1)
 }
 
+const isCurrentStepCompleted = computed(() => {
+  if (!player || currentStepIndex.value == null) return false
+  return player.isStepCompleted(currentStepIndex.value)
+})
+
 const goNextStep = () => {
   if (currentStepIndex.value == null) return
-  goToStep(currentStepIndex.value + 1)
+  if (currentStepIndex.value + 1 <= player.totalSteps.value - 1)
+    goToStep(currentStepIndex.value + 1)
+  else
+    goBack()
+}
+
+const scrollToTop = async () => {
+  await nextTick()
+  document.documentElement.scrollTop = 0
+  document.body.scrollTop = 0
 }
 
 const canGoPrev = computed(
@@ -99,13 +113,15 @@ const canGoNext = computed(
 
 const markCompleted = () => {
   if (player && currentStepIndex.value != null) {
-    player.markStepCompleted(currentStepIndex.value)
+    const isMarkedCompleted = player.markStepCompleted(currentStepIndex.value)
+    if (isMarkedCompleted) goNextStep()
   }
 }
 
 onMounted(async () => {
   await loadSheet(route.params.slug)
   await loadSequenceContext()
+  await scrollToTop()
 })
 
 watch(
@@ -114,6 +130,7 @@ watch(
     if (newSlug && newSlug !== oldSlug) {
       await loadSheet(newSlug)
       await loadSequenceContext()
+      await scrollToTop();
     }
   }
 )
@@ -144,10 +161,7 @@ watch(
         <div class="sheet-sequence-banner__main">
           <p class="sheet-sequence-banner__title">
             Parcours :
-            <RouterLink
-              class="sheet-sequence-banner__link"
-              :to="`/parcours/${sequence.slug}`"
-            >
+            <RouterLink class="sheet-sequence-banner__link" :to="`/parcours/${sequence.slug}`">
               {{ sequence.name }}
             </RouterLink>
           </p>
@@ -156,18 +170,10 @@ watch(
           </p>
         </div>
         <div class="sheet-sequence-banner__actions">
-          <button
-            class="btn btn--ghost btn-sm"
-            :disabled="!canGoPrev"
-            @click="goPrevStep"
-          >
+          <button class="btn btn--ghost btn-sm" :disabled="!canGoPrev" @click="goPrevStep">
             ← Étape précédente
           </button>
-          <button
-            class="btn btn--ghost btn-sm"
-            :disabled="!canGoNext"
-            @click="goNextStep"
-          >
+          <button class="btn btn--ghost btn-sm" :disabled="!canGoNext" @click="goNextStep">
             Étape suivante →
           </button>
         </div>
@@ -180,10 +186,13 @@ watch(
         <button @click="goBack" class="btn btn--secondary">
           ← Retour à la liste
         </button>
-        <button class="btn btn--primary" @click="markCompleted">
-          Marquer comme complété
+
+        <button v-if="hasSequenceContext" class="btn"
+          :class="isCurrentStepCompleted ? 'btn--completed' : 'btn--primary'" @click="markCompleted">
+          {{ isCurrentStepCompleted ? 'Étape complétée' : 'Marquer comme complété' }}
         </button>
       </footer>
+
     </article>
   </div>
 </template>

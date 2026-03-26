@@ -96,7 +96,7 @@ const reset = () => {
           v-if="!isRevealed"
           @click="reveal"
           :disabled="!hasAnswer"
-          class="btn btn--primary"
+          class="btn btn--primary padding-sm"
         >
           Voir la correction
         </button>

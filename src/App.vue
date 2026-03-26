@@ -14,23 +14,8 @@ import logo from '@/assets/logo.png';
 
         <ul class="app-nav__links">
           <li>
-            <RouterLink to="" class="app-nav__link">
-              HTML
-            </RouterLink>
-          </li>
-          <li>
-            <RouterLink to="" class="app-nav__link">
-              CSS
-            </RouterLink>
-          </li>
-          <li>
-            <RouterLink to="" class="app-nav__link">
-              JavaScript
-            </RouterLink>
-          </li>
-          <li>
-            <RouterLink to="" class="app-nav__link">
-              Intégration
+            <RouterLink to="/parcours" class="app-nav__link">
+              Parcours
             </RouterLink>
           </li>
         </ul>

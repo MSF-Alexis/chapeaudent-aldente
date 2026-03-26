@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, onMounted, nextTick } from 'vue'
+import { computed, ref, onMounted, nextTick, watch } from 'vue'
 import { extractCodeBlocks } from '@/helpers/courseDisplayHelper'
 import McqSection from '@/components/sheets/validations/MCQ.vue'
 import Checkpoint from '@/components/sheets/validations/Checkpoint.vue'
@@ -16,6 +16,12 @@ const props = defineProps({
 })
 
 
+const highlight = async () => {
+  await nextTick()
+  if (window.Prism) window.Prism.highlightAll()
+}
+
+
 const theoryData = computed(() => {
   if (!props.sheet.theory) return null
   return extractCodeBlocks(props.sheet.theory)
@@ -28,6 +34,15 @@ onMounted(async () => {
   await nextTick()
   injectCodeBlocks()
 })
+
+watch(
+  () => props.sheet.theory,
+  async () => {
+    await nextTick()
+    injectCodeBlocks()
+    if (window.Prism) window.Prism.highlightAll()
+  }
+)
 
 const injectCodeBlocks = () => {
   if (!theoryRef.value || !theoryData.value) return

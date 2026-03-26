@@ -49,13 +49,27 @@ export function useSequencePlayer(sequence, router) {
 
     const markStepCompleted = (index) => {
         if (index < 0 || index >= totalSteps.value) return
-        if (!progression.value.completedSteps.includes(index)) {
+
+        const already = progression.value.completedSteps.includes(index)
+
+        if (already) {
+            progression.value.completedSteps = progression.value.completedSteps.filter(
+                (i) => i !== index
+            )
+
+            const max = progression.value.completedSteps.length
+                ? Math.max(...progression.value.completedSteps)
+                : 0
+            progression.value.lastStep = max
+        } else {
             progression.value.completedSteps.push(index)
+            if (index > progression.value.lastStep) {
+                progression.value.lastStep = index
+            }
         }
-        if (index > progression.value.lastStep) {
-            progression.value.lastStep = index
-        }
+
         saveProgression(progression.value)
+        return !already;
     }
 
     const isStepCompleted = (index) => progression.value.completedSteps.includes(index)

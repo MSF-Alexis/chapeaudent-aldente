@@ -107,7 +107,7 @@ onMounted(async () => {
                         </div>
 
                         <div class="sequence-card__actions">
-                            <RouterLink class="btn btn--primary" :to="`/parcours/${sequence.slug}`">
+                            <RouterLink class="btn btn--primary padding-xs" :to="`/parcours/${sequence.slug}`">
                                 Démarrer ce parcours →
                             </RouterLink>
                         </div>

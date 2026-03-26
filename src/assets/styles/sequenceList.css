@@ -155,8 +155,6 @@
     line-height: 1;
 }
 
-
-
 .sequence-card__actions {
     padding-top: var(--space-sm);
     border-top: 1px solid var(--color-border);
@@ -164,10 +162,6 @@
 
 .sequence-card__actions .btn {
     width: 100%;
-}
-
-.btn {
-    padding: var(--space-xs);
 }
 
 .sequence-card__header {
