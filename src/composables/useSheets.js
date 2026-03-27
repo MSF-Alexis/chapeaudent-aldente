@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 
-const baseUrl = "https://chapeaudent-aldente-api-vercel.vercel.app";
+const baseUrl = "https://chapeaudent-aldente-api-vercel.vercel.app/api";
 const sheetsCache = ref(new Map())
 const loading = ref(false)
 const error = ref(null)
@@ -15,7 +15,7 @@ export function useSheets() {
     error.value = null
 
     try {
-      const response = await fetch(`${baseUrl}/sheet/${sheetSlug}`)
+      const response = await fetch(`${baseUrl}/sheets/${sheetSlug}`)
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
       
       const sheet = await response.json()

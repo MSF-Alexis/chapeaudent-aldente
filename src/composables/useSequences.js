@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 
-const baseUrl = 'https://chapeaudent-aldente-api-vercel.vercel.app'
+const baseUrl = 'https://chapeaudent-aldente-api-vercel.vercel.app/api'
 
 const sequencesCache = ref(new Map())
 const loading = ref(false)
@@ -18,7 +18,7 @@ export function useSequences() {
         error.value = null
 
         try {
-            const response = await fetch(`${baseUrl}/sequence/${slug}`)
+            const response = await fetch(`${baseUrl}/sequences/${slug}`)
             if (!response.ok) throw new Error(`HTTP ${response.status}`)
 
             const sequence = await response.json()
@@ -41,7 +41,7 @@ export function useSequences() {
         error.value = null
 
         try {
-            const response = await fetch(`${baseUrl}/sequence`)
+            const response = await fetch(`${baseUrl}/sequences`)
             if (!response.ok) throw new Error(`HTTP ${response.status}`)
 
             const sequences = await response.json()
