@@ -33,7 +33,7 @@ export type McqQuestion = {
     explanation: string
 }
 
-export type FillTheGapGap = {
+export type FillTheGap = {
     guideline: string
     placeholder: string
     answer: string
@@ -41,8 +41,9 @@ export type FillTheGapGap = {
 }
 
 export type FillTheGapValidation = {
-    codeTemplate: string
-    blanks: FillTheGapGap[]
+    codeTemplate: string,
+    guideline : string,
+    blanks: FillTheGap[]
 }
 
 export type CheckpointValidation = {

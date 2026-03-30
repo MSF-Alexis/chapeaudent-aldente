@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick, watch } from 'vue'
+import { ref, computed, onMounted, nextTick, watch, type Ref } from 'vue'
 import { extractCodeBlocks } from '@/helpers/courseDisplayHelper'
 
 const props = defineProps({
@@ -11,7 +11,7 @@ const props = defineProps({
 
 const userAnswer = ref('')
 const isRevealed = ref(false)
-const isSelfValidated = ref(null)
+const isSelfValidated:Ref<boolean|null> = ref(null)
 
 const hasAnswer = computed(() => userAnswer.value.trim().length > 0)
 
@@ -23,13 +23,14 @@ const questionRef = ref(null)
 const answerRef = ref(null)
 
 
-const injectCodeBlocks = (containerRef, codeBlocks) => {
+const injectCodeBlocks = (containerRef: Ref<HTMLElement | null>, codeBlocks: { content: string }[] | undefined) => {
   if (!containerRef.value || !codeBlocks?.length) return
 
   const placeholders = containerRef.value.querySelectorAll('[data-code-block]')
 
   placeholders.forEach((placeholder) => {
-    const blockId = parseInt(placeholder.dataset.codeBlock)
+    const placeholderEl = placeholder as HTMLElement;
+    const blockId = parseInt(placeholderEl.dataset.codeBlock || '0')
     const codeBlock = codeBlocks[blockId]
 
     if (codeBlock) {
@@ -59,7 +60,7 @@ const reveal = () => {
   isRevealed.value = true
 }
 
-const validate = (isCorrect) => {
+const validate = (isCorrect : boolean) => {
   isSelfValidated.value = isCorrect
 }
 
@@ -74,50 +75,33 @@ const reset = () => {
   <section class="sheet-section sheet-section--checkpoint">
     <h2 class="section-title">✍️ Checkpoint</h2>
 
-    
-    <p
-      ref="questionRef"
-      v-html="questionData.processedHtml"
-      class="checkpoint-question section-content"
-    ></p>
 
-    
+    <p ref="questionRef" v-html="questionData.processedHtml" class="checkpoint-question section-content"></p>
+
+
     <div class="checkpoint-input-wrap" v-if="isSelfValidated === null">
-      <textarea
-        v-model="userAnswer"
-        class="checkpoint-textarea"
-        placeholder="Rédigez votre réponse ici..."
-        rows="5"
-        :disabled="isRevealed"
-      ></textarea>
+      <textarea v-model="userAnswer" class="checkpoint-textarea" placeholder="Rédigez votre réponse ici..." rows="5"
+        :disabled="isRevealed"></textarea>
 
       <div class="checkpoint-actions">
-        <button
-          v-if="!isRevealed"
-          @click="reveal"
-          :disabled="!hasAnswer"
-          class="btn btn--primary padding-sm"
-        >
+        <button v-if="!isRevealed" @click="reveal" :disabled="!hasAnswer" class="btn btn--primary padding-sm">
           Voir la correction
         </button>
       </div>
     </div>
 
-    
+
     <Transition name="fade">
       <div v-if="isRevealed && isSelfValidated === null" class="checkpoint-correction">
         <div class="checkpoint-correction__header">
           <span class="checkpoint-correction__label">📋 Correction</span>
         </div>
 
-        
-        <div
-          ref="answerRef"
-          v-html="answerData.processedHtml"
-          class="checkpoint-correction__content section-content"
-        ></div>
 
-        
+        <div ref="answerRef" v-html="answerData.processedHtml" class="checkpoint-correction__content section-content">
+        </div>
+
+
         <div class="checkpoint-self-eval">
           <p class="checkpoint-self-eval__question">
             Est-ce que votre réponse correspond ?
@@ -135,11 +119,8 @@ const reset = () => {
     </Transition>
 
     <Transition name="fade">
-      <div
-        v-if="isSelfValidated !== null"
-        class="checkpoint-result"
-        :class="isSelfValidated ? 'checkpoint-result--success' : 'checkpoint-result--fail'"
-      >
+      <div v-if="isSelfValidated !== null" class="checkpoint-result"
+        :class="isSelfValidated ? 'checkpoint-result--success' : 'checkpoint-result--fail'">
         <p v-if="isSelfValidated" class="checkpoint-result__text">
           🎉 Bravo ! Vous avez bien assimilé ce point.
         </p>

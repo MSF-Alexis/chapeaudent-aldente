@@ -1,15 +1,27 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, type Ref } from 'vue'
+import type { FillTheGapValidation } from '@/types/Sheet'
 
-const props = defineProps({
-  fillTheGap: {
-    type: Object,
-    required: true
-  }
-})
+const props = defineProps<{
+  fillTheGap: FillTheGapValidation
+}>()
+
+type TextSegment = {
+  type: 'text'
+  content: string
+}
+
+type BlankSegment = {
+  type: 'blank'
+  blankIndex: number
+  placeholder: string
+  content: string
+}
+
+type Segment = TextSegment | BlankSegment
 
 const userAnswers = ref(props.fillTheGap.blanks.map(() => ''))
-const statuses = ref(props.fillTheGap.blanks.map(() => null))
+const statuses: Ref<(string | null)[]> = ref(props.fillTheGap.blanks.map(() => null))
 const showCorrection = ref(false)
 
 const allFilled = computed(() =>
@@ -38,17 +50,17 @@ const parsedLines = computed(() => {
   const blanks = props.fillTheGap.blanks
 
   return lines.map(line => {
-    let segments = [{ type: 'text', content: line }]
+    let segments: Segment[] = [{ type: 'text', content: line }]
 
     blanks.forEach((blank, blankIndex) => {
-      const next = []
+      const next: Segment[] = []
       segments.forEach(seg => {
         if (seg.type !== 'text') { next.push(seg); return }
         const parts = seg.content.split(blank.placeholder)
         parts.forEach((part, i) => {
           if (part !== '') next.push({ type: 'text', content: part })
           if (i < parts.length - 1) {
-            next.push({ type: 'blank', blankIndex, placeholder: blank.placeholder })
+            next.push({ type: 'blank', blankIndex, placeholder: blank.placeholder, content: '' })
           }
         })
       })
@@ -58,10 +70,9 @@ const parsedLines = computed(() => {
     return segments
   })
 })
-
 const validate = () => {
   statuses.value = props.fillTheGap.blanks.map((blank, i) => {
-    return userAnswers.value[i].trim().toLowerCase() === blank.answer.trim().toLowerCase()
+    return userAnswers.value[i]?.trim().toLowerCase() === blank.answer.trim().toLowerCase()
       ? 'correct' : 'wrong'
   })
   showCorrection.value = true

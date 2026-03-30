@@ -1,47 +1,42 @@
 import { ref, computed } from 'vue'
+import type { Ref } from 'vue'
+import { apiFetch } from '@/services/api'
+import type { Sheet } from '@/types/Sheet'
 
-const baseUrl = 'http://localhost:3000/api';
-const sheetsCache = ref(new Map())
+const sheetsCache: Ref<Map<string, Sheet>> = ref(new Map())
 const loading = ref(false)
-const error = ref(null)
+const error = ref<Error | null>(null)
 
 export function useSheets() {
-  const fetchSheet = async (sheetSlug) => {
-    if (sheetsCache.value.has(sheetSlug)) {
-      return sheetsCache.value.get(sheetSlug)
+  const baseUrlCollection = "/sheets";
+  const fetchSheet = async (slug: string): Promise<Sheet> => {
+    if (sheetsCache.value.has(slug)) {
+      return sheetsCache.value.get(slug)!
     }
 
     loading.value = true
     error.value = null
 
     try {
-      const response = await fetch(`${baseUrl}/sheets/${sheetSlug}`)
-      if (!response.ok) throw new Error(`HTTP ${response.status}`)
-      
-      const sheet = await response.json()
-      sheetsCache.value.set(sheetSlug, sheet)
+      const sheet = await apiFetch<Sheet>(`${baseUrlCollection}/${slug}`)
+      sheetsCache.value.set(slug, sheet)
       return sheet
     } catch (err) {
-      error.value = err
+      error.value = err as Error
       throw err
     } finally {
       loading.value = false
     }
   }
 
-  const fetchAllSheets = async () => {
+  const fetchAllSheets = async (): Promise<Sheet[]> => {
     loading.value = true
     try {
-      const response = await fetch(`${baseUrl}/api/sheets`)
-      const sheets = await response.json()
-      
-      sheets.forEach(sheet => {
-        sheetsCache.value.set(sheet.slug, sheet)
-      })
-      
+      const sheets = await apiFetch<Sheet[]>(baseUrlCollection)
+      sheets.forEach(sheet => sheetsCache.value.set(sheet.slug, sheet))
       return sheets
     } catch (err) {
-      error.value = err
+      error.value = err as Error
       throw err
     } finally {
       loading.value = false
@@ -49,23 +44,14 @@ export function useSheets() {
   }
 
   const sheetsByType = computed(() => {
-    const grouped = { html: [], css: [], js: [], integration: [] }
+    const grouped: Record<string, Sheet[]> = { html: [], css: [], js: [], integration: [] }
     sheetsCache.value.forEach(sheet => {
       grouped[sheet.type]?.push(sheet)
     })
     return grouped
   })
 
-  const clearCache = () => {
-    sheetsCache.value.clear()
-  }
+  const clearCache = () => sheetsCache.value.clear()
 
-  return {
-    fetchSheet,
-    fetchAllSheets,
-    sheetsByType,
-    loading,
-    error,
-    clearCache
-  }
+  return { fetchSheet, fetchAllSheets, sheetsByType, loading, error, clearCache }
 }

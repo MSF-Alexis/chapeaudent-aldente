@@ -1,26 +1,24 @@
 <script setup lang="ts">
-import { ref, computed, nextTick, watch } from 'vue'
+import { ref, computed, nextTick, watch, type Ref } from 'vue'
 import { extractCodeBlocks } from '@/helpers/courseDisplayHelper'
+import type { McqQuestion } from '@/types/Sheet'
 
-const props = defineProps({
-  mcq: {
-    type: Array,
-    required: true
-  }
-})
+const props = defineProps<{
+  mcq: McqQuestion[]
+}>()
 
-const answers = ref(props.mcq.map(() => null))
-const explanationRefs = ref([])
+const answers: Ref<(number | null)[]> = ref(props.mcq.map(() => null))
+const explanationRefs: Ref<(HTMLElement | null)[]> = ref([])
 
-const selectAnswer = (questionIndex, optionIndex) => {
+const selectAnswer = (questionIndex: number, optionIndex: number) => {
   if (answers.value[questionIndex] !== null) return
   answers.value[questionIndex] = optionIndex
 }
 
-const getOptionStatus = (questionIndex, optionIndex) => {
+const getOptionStatus = (questionIndex: number, optionIndex: number) => {
   const answered = answers.value[questionIndex]
   if (answered === null) return 'default'
-  const correctIndex = props.mcq[questionIndex].answerIndex
+  const correctIndex = props.mcq[questionIndex]?.answerIndex
   if (optionIndex === correctIndex) return 'correct'
   if (optionIndex === answered && answered !== correctIndex) return 'wrong'
   return 'default'
@@ -32,7 +30,7 @@ const parsedExplanations = computed(() => {
 })
 
 
-const injectExplanationCodes = async (qIndex) => {
+const injectExplanationCodes = async (qIndex: number) => {
   await nextTick()
   const el = explanationRefs.value[qIndex]
   if (!el) return
@@ -40,9 +38,10 @@ const injectExplanationCodes = async (qIndex) => {
   const codeBlocks = parsedExplanations.value[qIndex]?.codeBlocks
   if (!codeBlocks?.length) return
 
-  const placeholders = el.querySelectorAll('[data-code-block]')
+  const placeholders = el?.querySelectorAll('[data-code-block]')
   placeholders.forEach((placeholder) => {
-    const blockId = parseInt(placeholder.dataset.codeBlock)
+    const htmlPlaceholder = placeholder as HTMLElement
+    const blockId = parseInt(htmlPlaceholder.dataset.codeBlock!)
     const codeBlock = codeBlocks[blockId]
     if (codeBlock) {
       const codeEl = document.createElement('code')
@@ -55,7 +54,7 @@ const injectExplanationCodes = async (qIndex) => {
 
 
 watch(answers, (newAnswers) => {
-  newAnswers.forEach((answer, qIndex) => {
+  newAnswers.forEach((answer: number | null, qIndex: number) => {
     if (answer !== null) {
       injectExplanationCodes(qIndex)
     }
@@ -64,12 +63,12 @@ watch(answers, (newAnswers) => {
 
 const score = computed(() => {
   return answers.value.filter(
-    (answer, i) => answer === props.mcq[i].answerIndex
+    (answer: number | null, i: number) => answer === props.mcq[i]?.answerIndex
   ).length
 })
 
 const allAnswered = computed(() => {
-  return answers.value.every(a => a !== null)
+  return answers.value.every((a: number | null) => a !== null)
 })
 
 const reset = () => {
@@ -101,9 +100,9 @@ const reset = () => {
         <Transition name="fade">
           <div v-if="answers[qIndex] !== null" class="mcq-explanation"
             :class="answers[qIndex] === question.answerIndex ? 'mcq-explanation--correct' : 'mcq-explanation--wrong'">
-            
-            <p :ref="el => explanationRefs[qIndex] = el" v-html="'💬 ' + parsedExplanations[qIndex].processedHtml"
-              class="mcq-explanation__text"></p>
+
+            <p :ref="(el) => { explanationRefs[qIndex] = el as HTMLElement | null }"
+              v-html="'💬 ' + parsedExplanations[qIndex]?.processedHtml" class="mcq-explanation__text"></p>
           </div>
         </Transition>
       </div>

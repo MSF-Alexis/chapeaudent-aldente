@@ -1,12 +1,10 @@
 <script setup lang="ts">
+import type { SpotTheBugValidation } from '@/types/Sheet';
 import { computed } from 'vue'
 
-const props = defineProps({
-  spotTheBug: {
-    type: Object,
-    required: true
-  }
-})
+const props = defineProps<{
+  spotTheBug: SpotTheBugValidation
+}>()
 
 
 const hasErrors = computed(() => props.spotTheBug.errors?.length > 0)
@@ -16,12 +14,12 @@ const hasErrors = computed(() => props.spotTheBug.errors?.length > 0)
   <section class="sheet-section sheet-section--spot">
     <h2 class="section-title">🐛 Spot the bug</h2>
 
-    
+
     <p class="spot-guideline">
       Le code ci-dessous contient une ou plusieurs erreurs. Identifie-les, puis compare avec la correction.
     </p>
 
-    
+
     <div class="spot-block">
       <div class="spot-block__header">
         <span class="spot-block__label">Code à corriger</span>
@@ -29,7 +27,7 @@ const hasErrors = computed(() => props.spotTheBug.errors?.length > 0)
       <pre class="spot-code"><code>{{ spotTheBug.buggedCode }}</code></pre>
     </div>
 
-    
+
     <div v-if="hasErrors" class="spot-errors">
       <h3 class="spot-errors__title">🔍 Problèmes à détecter</h3>
       <ul class="spot-errors__list">
@@ -43,7 +41,7 @@ const hasErrors = computed(() => props.spotTheBug.errors?.length > 0)
       </ul>
     </div>
 
-    
+
     <div class="spot-block spot-block--fixed">
       <div class="spot-block__header">
         <span class="spot-block__label">Code corrigé</span>

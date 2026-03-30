@@ -1,80 +1,42 @@
 import { ref, computed } from 'vue'
+import type { Ref } from 'vue'
+import { apiFetch } from '@/services/api'
+import type { Sequence } from '@/types/Sequence'
 
-const baseUrl = 'http://localhost:3000/api'
-
-const sequencesCache = ref(new Map())
+const sequencesCache: Ref<Map<string, Sequence>> = ref(new Map())
 const loading = ref(false)
-const error = ref(null)
+const error = ref<Error | null>(null)
 
 export function useSequences() {
+  const fetchAllSequences = async (): Promise<Sequence[]> => {
+    if (sequencesCache.value.size > 0) return [...sequencesCache.value.values()]
 
-    const fetchSequence = async (slug) => {
-        const cached = sequencesCache.value.get(slug)
-        if (cached && cached.nodes?.length && cached.nodes[0].title) {
-            return cached
-        }
+    loading.value = true
+    error.value = null
 
-        loading.value = true
-        error.value = null
-
-        try {
-            const response = await fetch(`${baseUrl}/sequences/${slug}`)
-            if (!response.ok) throw new Error(`HTTP ${response.status}`)
-
-            const sequence = await response.json()
-            sequencesCache.value.set(slug, sequence)
-            return sequence
-        } catch (err) {
-            error.value = err
-            throw err
-        } finally {
-            loading.value = false
-        }
+    try {
+      const sequences = await apiFetch<Sequence[]>('/sequences')
+      sequences.forEach(seq => sequencesCache.value.set(seq.slug, seq))
+      return sequences
+    } catch (err) {
+      error.value = err as Error
+      throw err
+    } finally {
+      loading.value = false
     }
+  }
 
-    const fetchAllSequences = async () => {
-        if (sequencesCache.value.size > 0) {
-            return [...sequencesCache.value.values()]
-        }
-
-        loading.value = true
-        error.value = null
-
-        try {
-            const response = await fetch(`${baseUrl}/sequences`)
-            if (!response.ok) throw new Error(`HTTP ${response.status}`)
-
-            const sequences = await response.json()
-            sequences.forEach(seq => sequencesCache.value.set(seq.slug, seq))
-            return sequences
-        } catch (err) {
-            error.value = err
-            throw err
-        } finally {
-            loading.value = false
-        }
-    }
-
-    const sequencesByLevel = computed(() => {
-        const grouped = {}
-        sequencesCache.value.forEach(seq => {
-            const level = seq.level ?? 'Autre'
-            if (!grouped[level]) grouped[level] = []
-            grouped[level].push(seq)
-        })
-        return grouped
+  const sequencesByLevel = computed(() => {
+    const grouped: Record<string, Sequence[]> = {}
+    sequencesCache.value.forEach(seq => {
+      const level = seq.level ?? 'Autre'
+      if (!grouped[level]) grouped[level] = []
+      grouped[level].push(seq)
     })
+    return grouped
+  })
 
-    const clearCache = () => {
-        sequencesCache.value.clear()
-    }
+  const clearCache = () => sequencesCache.value.clear()
 
-    return {
-        fetchSequence,
-        fetchAllSequences,
-        sequencesByLevel,
-        loading,
-        error,
-        clearCache
-    }
+  return { fetchAllSequences, sequencesByLevel, loading, error, clearCache }
 }

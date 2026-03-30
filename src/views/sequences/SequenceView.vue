@@ -1,87 +1,62 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue'
-import { useSequences } from '@/composables/useSequences'
-import { useSequencePlayer } from '@/composables/useSequencePlayer'
+import type { Ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useSequenceDetail } from '@/composables/useSequenceDetail'
+import { useSequencePlayer } from '@/composables/useSequencePlayer'
+import SequenceStepItem from '@/components/sequences/SequenceStepItem.vue'
+import type { EnrichedSequence } from '@/types/Sequence'
 import '@/assets/styles/sequenceView.css'
 
-const props = defineProps({ slug: { type: String, required: true } })
+const props = defineProps<{ slug: string }>()
 const router = useRouter()
 
-const { fetchSequence, loading, error } = useSequences()
+const { fetchEnrichedSequence, loading, error } = useSequenceDetail()
 
-const sequence = ref(null)
+const sequence: Ref<EnrichedSequence | null> = ref(null)
 
+// On stocke directement le retour du player, pas dans une ref imbriquée
+let player: ReturnType<typeof useSequencePlayer> | null = null
+
+// Ces computed lisent depuis player directement, réactifs car player est réassigné
 const orderedNodes = computed(() => player?.orderedNodes.value ?? [])
-const progression = ref({ completedSteps: [], lastStep: 0 })
 const totalSteps = computed(() => player?.totalSteps.value ?? 0)
+const progression = computed(() => player?.progression.value ?? { completedSteps: [], lastStep: 0 })
 
-let player = null
-
-onMounted(async () => {
-  await loadSequence(props.slug)
-})
-
-const loadSequence = async (slug) => {
-  sequence.value = await fetchSequence(slug)
-  initPlayer()
-}
-
-const initPlayer = () => {
-  if (!sequence.value) {
+const loadSequence = async (slug: string) => {
+  sequence.value = await fetchEnrichedSequence(slug)
+  if (sequence.value) {
+    player = useSequencePlayer(sequence.value, router)
+  } else {
     player = null
-    progression.value = { completedSteps: [], lastStep: 0 }
-    return
   }
-
-  player = useSequencePlayer(sequence.value, router)
-  progression.value = player.progression.value
 }
 
-onMounted(async () => {
-  await loadSequence(props.slug)
+onMounted(() => loadSequence(props.slug))
+watch(() => props.slug, (newSlug, oldSlug) => {
+  if (newSlug && newSlug !== oldSlug) loadSequence(newSlug)
 })
-
-
-
-watch(
-  () => props.slug,
-  async (newSlug, oldSlug) => {
-    if (newSlug && newSlug !== oldSlug) {
-      await loadSequence(newSlug)
-    }
-  }
-)
 
 const startPlayer = () => player?.start()
-const goTo = (i) => player?.goTo(i)
-const isStepCompleted = (i) => player?.isStepCompleted(i) ?? false
-const resetProgression = () => {
-  player?.resetProgression()
-  progression.value = { completedSteps: [], lastStep: 0 }
-}
-
+const goTo = (index: number) => player?.goTo(index)
+const isStepCompleted = (index: number) => player?.isStepCompleted(index) ?? false
+const resetProgression = () => player?.resetProgression()
 </script>
 
 <template>
   <main class="sequence-view">
-
     <div v-if="loading" class="sequence-view__loading">
       <p>Chargement du parcours...</p>
     </div>
 
     <div v-else-if="error" class="sequence-view__error">
       <p>Impossible de charger ce parcours.</p>
-      <RouterLink class="btn btn--secondary" to="/parcours">
-        ← Retour aux parcours
-      </RouterLink>
+      <RouterLink class="btn btn--secondary" to="/parcours">← Retour aux parcours</RouterLink>
     </div>
 
     <template v-else-if="sequence && orderedNodes.length > 0">
-
       <header class="sequence-view__header">
         <div class="sequence-view__header-inner">
-
           <nav class="breadcrumb">
             <RouterLink class="breadcrumb__link" to="/parcours">Parcours</RouterLink>
             <span class="breadcrumb__separator">›</span>
@@ -109,9 +84,7 @@ const resetProgression = () => {
               <span class="sequence-view__stat-label">estimées</span>
             </div>
             <div class="sequence-view__stat">
-              <span class="sequence-view__stat-value">
-                {{ progression.completedSteps.length }}
-              </span>
+              <span class="sequence-view__stat-value">{{ progression.completedSteps.length }}</span>
               <span class="sequence-view__stat-label">complétées</span>
             </div>
           </div>
@@ -123,41 +96,21 @@ const resetProgression = () => {
             <button v-if="progression.completedSteps.length > 0" class="btn btn--ghost" @click="resetProgression">
               Recommencer
             </button>
-            <RouterLink class="btn btn--ghost" to="/parcours">
-              ← Tous les parcours
-            </RouterLink>
+            <RouterLink class="btn btn--ghost" to="/parcours">← Tous les parcours</RouterLink>
           </div>
-
         </div>
       </header>
 
       <section class="sequence-view__steps">
         <div class="sequence-view__steps-inner">
           <h2 class="sequence-view__steps-title">Étapes du parcours</h2>
-
           <ol class="stepper">
-            <li v-for="(node, index) in orderedNodes" :key="node.id" class="stepper__item" :class="{
-              'stepper__item--completed': isStepCompleted(index),
-              'stepper__item--current': index === progression.lastStep && !isStepCompleted(index)
-            }">
-              <div class="stepper__marker">
-                <span v-if="isStepCompleted(index)">✓</span>
-                <span v-else>{{ index + 1 }}</span>
-              </div>
-
-              <div class="stepper__content">
-                <span class="stepper__slug">{{ node.title }}</span>
-              </div>
-
-              <span class="stepper__type pill pill--id">{{ node.type }}</span>
-              <button class="btn btn--ghost btn-sm" @click="goTo(index)">
-                Voir
-              </button>
-            </li>
+            <SequenceStepItem v-for="(node, index) in orderedNodes" :key="node.id" :node="node" :index="index"
+              :is-completed="isStepCompleted(index)"
+              :is-current="index === progression.lastStep && !isStepCompleted(index)" @go="goTo" />
           </ol>
         </div>
       </section>
-
     </template>
   </main>
 </template>

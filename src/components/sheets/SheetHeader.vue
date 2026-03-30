@@ -2,12 +2,11 @@
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 
-const props = defineProps({
-    sheet: {
-        type: Object,
-        required: true
-    }
-})
+import type { Sheet } from '@/types/Sheet'
+
+const props = defineProps<{
+  sheet: Sheet
+}>()
 
 const typeBadgeClass = computed(() => {
     if (!props.sheet?.type) return ''

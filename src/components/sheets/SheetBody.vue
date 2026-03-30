@@ -1,69 +1,49 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, nextTick, watch } from 'vue'
+import { computed, ref, onMounted, watch, nextTick } from 'vue'
+import type { Sheet } from '@/types/Sheet'
 import { extractCodeBlocks } from '@/helpers/courseDisplayHelper'
 import McqSection from '@/components/sheets/validations/MCQ.vue'
-import Checkpoint from '@/components/sheets/validations/Checkpoint.vue'
+import CheckPoint from '@/components/sheets/validations/CheckPoint.vue'
 import SheetExamples from '@/components/sheets/SheetExamples.vue'
 import FillTheGap from '@/components/sheets/validations/FillTheGap.vue'
 import SpotTheBug from '@/components/sheets/validations/SpotTheBug.vue'
 
+const props = defineProps<{
+  sheet: Sheet
+}>()
 
-const props = defineProps({
-  sheet: {
-    type: Object,
-    required: true
-  }
-})
-
-
-const highlight = async () => {
-  await nextTick()
-  if (window.Prism) window.Prism.highlightAll()
-}
-
+const theoryRef = ref<HTMLElement | null>(null)
 
 const theoryData = computed(() => {
   if (!props.sheet.theory) return null
   return extractCodeBlocks(props.sheet.theory)
 })
 
-const theoryRef = ref(null)
-
-
-onMounted(async () => {
+const renderTheory = async () => {
   await nextTick()
   injectCodeBlocks()
-})
-
-watch(
-  () => props.sheet.theory,
-  async () => {
-    await nextTick()
-    injectCodeBlocks()
-    if (window.Prism) window.Prism.highlightAll()
-  }
-)
+  const prism = (window as Window & { Prism?: { highlightAll: () => void } }).Prism
+  if (prism) prism.highlightAll()
+}
 
 const injectCodeBlocks = () => {
   if (!theoryRef.value || !theoryData.value) return
 
   const placeholders = theoryRef.value.querySelectorAll('[data-code-block]')
-
   placeholders.forEach((placeholder) => {
-    const blockId = parseInt(placeholder.dataset.codeBlock)
-    const codeBlock = theoryData.value.codeBlocks[blockId]
-
+    const blockId = parseInt((placeholder as HTMLElement).dataset.codeBlock ?? '')
+    const codeBlock = theoryData.value!.codeBlocks[blockId]
     if (codeBlock) {
-
       const codeEl = document.createElement('code')
       codeEl.className = 'inline-code'
       codeEl.textContent = codeBlock.content
-
-
       placeholder.replaceWith(codeEl)
     }
   })
 }
+
+onMounted(renderTheory)
+watch(() => props.sheet, renderTheory, { deep: true })
 </script>
 
 <template>
@@ -85,7 +65,7 @@ const injectCodeBlocks = () => {
     </section>
     <SheetExamples v-if="sheet.examples" :examples="sheet.examples" />
     <McqSection v-if="sheet.validation?.mcq?.length" :mcq="sheet.validation.mcq" />
-    <Checkpoint v-if="sheet.validation?.checkpoint" :checkpoint="sheet.validation.checkpoint" />
+    <CheckPoint v-if="sheet.validation?.checkpoint" :checkpoint="sheet.validation.checkpoint" />
     <FillTheGap v-if="sheet.validation?.fillTheGap" :fill-the-gap="sheet.validation.fillTheGap" />
     <SpotTheBug v-if="sheet.validation?.spotTheBug" :spot-the-bug="sheet.validation.spotTheBug" />
   </div>
@@ -111,5 +91,4 @@ const injectCodeBlocks = () => {
 .section-content--sources :deep(a:hover) {
   color: var(--color-primary-strong, #1d4ed8);
 }
-
 </style>

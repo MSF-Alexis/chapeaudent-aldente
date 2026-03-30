@@ -5,44 +5,34 @@ import 'prismjs/components/prism-markup'
 import 'prismjs/components/prism-css'
 import 'prismjs/components/prism-javascript'
 import '@/assets/styles/prism.css'
+import type { CodeBlock as CodeBlockType } from '@/types/Sheet'
 
-const props = defineProps({
-  code: {
-    type: String,
-    required: true
-  },
-  language: {
-    type: String,
-    default: 'html'
-  },
-  label: {
-    type: String,
-    default: ''
-  }
-})
+const props = defineProps<{
+  bloc: CodeBlockType
+}>()
 
 const copyFeedback = ref('📋 Copier')
 
-const languageMap = {
-  html: { prismLang: 'markup', prismDef: Prism.languages.markup },
-  css: { prismLang: 'css', prismDef: Prism.languages.css },
-  js: { prismLang: 'javascript', prismDef: Prism.languages.javascript },
-  javascript: { prismLang: 'javascript', prismDef: Prism.languages.javascript }
+const languageMap: Record<string, { prismLang: string; prismDef: Prism.Grammar }> = {
+  html: { prismLang: 'markup', prismDef: Prism.languages.markup! },
+  css: { prismLang: 'css', prismDef: Prism.languages.css! },
+  js: { prismLang: 'javascript', prismDef: Prism.languages.javascript! },
+  javascript: { prismLang: 'javascript', prismDef: Prism.languages.javascript! }
 }
 
 const langConfig = computed(() => {
-  return languageMap[props.language] || languageMap.html
+  return languageMap[props.bloc.language] || languageMap.html
 })
 
 const decodedCode = computed(() => {
-  let decoded = props.code
-  
+  let decoded = props.bloc.code
+
   decoded = decoded
     .replace(/\\n/g, '\n')
     .replace(/\\"/g, '"')
     .replace(/\\'/g, "'")
     .replace(/\\\\/g, '\\')
-  
+
   const textarea = document.createElement('textarea')
   textarea.innerHTML = decoded
   return textarea.value
@@ -50,6 +40,7 @@ const decodedCode = computed(() => {
 
 const highlightedCode = computed(() => {
   const config = langConfig.value
+  if (!config) return ''
   return Prism.highlight(decodedCode.value, config.prismDef, config.prismLang)
 })
 
@@ -61,6 +52,7 @@ const copyCode = async () => {
       copyFeedback.value = '📋 Copier'
     }, 2000)
   } catch (err) {
+    console.error(err)
     copyFeedback.value = '❌ Erreur'
     setTimeout(() => {
       copyFeedback.value = '📋 Copier'
@@ -72,12 +64,13 @@ const copyCode = async () => {
 <template>
   <div class="code-block">
     <div class="code-header">
-      <span class="code-label">{{ label || language.toUpperCase() }}</span>
+      <span class="code-label">{{ props.bloc.label || props.bloc.label.toUpperCase() }}</span>
       <button @click="copyCode" class="copy-btn btn-sm btn--ghost">
         {{ copyFeedback }}
       </button>
     </div>
-    <pre class="code-pre"><code :class="`language-${langConfig.prismLang}`" v-html="highlightedCode"></code></pre>
+    <pre class="code-pre"
+      v-if="langConfig"><code :class="`language-${langConfig.prismLang}`" v-html="highlightedCode"></code></pre>
   </div>
 </template>
 
