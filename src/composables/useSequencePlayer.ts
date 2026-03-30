@@ -77,8 +77,11 @@ export function useSequencePlayer(sequence: EnrichedSequence, router: Router) {
   const navigateTo = (index: number) => {
     const node = orderedNodes.value[index]
     if (!node?.targetSlug) return
+
+    const routeName = node.targetCollection === 'exercices' ? 'exercice-view' : 'sheets-view'
+
     router.push({
-      name: 'sheets-view',
+      name: routeName,
       params: { slug: node.targetSlug },
       query: { parcours: sequence.slug, step: index },
     })
