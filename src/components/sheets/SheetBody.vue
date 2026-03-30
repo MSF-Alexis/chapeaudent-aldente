@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed, ref, onMounted, nextTick, watch } from 'vue'
 import { extractCodeBlocks } from '@/helpers/courseDisplayHelper'
 import McqSection from '@/components/sheets/validations/MCQ.vue'

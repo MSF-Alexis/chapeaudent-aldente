@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue'
 import { useSequences } from '@/composables/useSequences'
 import { useSequencePlayer } from '@/composables/useSequencePlayer'

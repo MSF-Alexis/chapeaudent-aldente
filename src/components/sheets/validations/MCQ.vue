@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, nextTick, watch } from 'vue'
 import { extractCodeBlocks } from '@/helpers/courseDisplayHelper'
 

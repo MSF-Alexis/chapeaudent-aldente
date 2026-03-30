@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 
-const baseUrl = "https://chapeaudent-aldente-api-vercel.vercel.app/api";
+const baseUrl = 'http://localhost:3000/api';
 const sheetsCache = ref(new Map())
 const loading = ref(false)
 const error = ref(null)
