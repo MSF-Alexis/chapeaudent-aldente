@@ -24,7 +24,6 @@ defineEmits<{
     </div>
     <div class="stepper__content">
       <span class="stepper__title">{{ node.title }}</span>
-      <span class="stepper__slug">{{ node.targetSlug }}</span>
     </div>
     <span class="stepper__type pill pill--id">{{ node.type }}</span>
     <button class="btn btn--ghost btn-sm" @click="$emit('go', index)">Voir</button>
