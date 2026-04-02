@@ -68,3 +68,9 @@ const DOMAIN_LABELS: Record<string, string> = {
     </div>
   </article>
 </template>
+
+<style scoped>
+.padding-xs {
+  padding: var(--space-xs);
+}
+</style>
