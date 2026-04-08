@@ -88,6 +88,52 @@ watch(() => props.sheet, renderTheory, { deep: true })
   color: var(--color-primary);
 }
 
+.section-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.95rem;
+  background: #ffffff;
+  border: 1px solid #e6e8ec;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+}
+
+.section-content table thead {
+  background: #f8fafc;
+}
+
+.section-content table th,
+.section-content table td {
+  padding: 0.9rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #edf0f3;
+}
+
+.section-content table th {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+}
+
+.section-content table td {
+  color: #4b5563;
+}
+
+.section-content table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.section-content table tbody tr:hover {
+  background: #f9fbfc;
+}
+
+.section-content table tbody tr:last-child td {
+  border-bottom: none;
+}
+
 .section-content--sources :deep(a:hover) {
   color: var(--color-primary-strong, #1d4ed8);
 }
