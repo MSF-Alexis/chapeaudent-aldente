@@ -36,7 +36,7 @@ const selectExample = (index: number) => {
 
 
       <div class="code-blocks">
-        <CodeBlock v-for="(block, idx) in examples[activeExampleIndex]?.blocs" :key="idx" :bloc="block" />
+        <CodeBlock v-for="(block, idx) in examples[activeExampleIndex]?.blocks" :key="idx" :bloc="block" />
       </div>
     </div>
   </section>
