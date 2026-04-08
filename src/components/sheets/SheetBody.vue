@@ -88,7 +88,7 @@ watch(() => props.sheet, renderTheory, { deep: true })
   color: var(--color-primary);
 }
 
-.section-content table {
+.section-content :deep(table) {
   width: 100%;
   border-collapse: collapse;
   margin: 1.5rem 0;
@@ -100,37 +100,37 @@ watch(() => props.sheet, renderTheory, { deep: true })
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
 }
 
-.section-content table thead {
+.section-content :deep(thead) {
   background: #f8fafc;
 }
 
-.section-content table th,
-.section-content table td {
+.section-content :deep(th),
+.section-content :deep(td) {
   padding: 0.9rem 1rem;
   text-align: left;
   border-bottom: 1px solid #edf0f3;
 }
 
-.section-content table th {
+.section-content :deep(th) {
   font-weight: 600;
   color: #1f2937;
   font-size: 0.9rem;
   letter-spacing: 0.02em;
 }
 
-.section-content table td {
+.section-content :deep(td) {
   color: #4b5563;
 }
 
-.section-content table tbody tr {
+.section-content :deep(tbody tr) {
   transition: background-color 0.2s ease;
 }
 
-.section-content table tbody tr:hover {
+.section-content :deep(tbody tr:hover) {
   background: #f9fbfc;
 }
 
-.section-content table tbody tr:last-child td {
+.section-content :deep(tbody tr:last-child td) {
   border-bottom: none;
 }
 
