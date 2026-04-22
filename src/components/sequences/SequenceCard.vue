@@ -36,7 +36,7 @@ const DOMAIN_LABELS: Record<string, string> = {
             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
           </svg>
           <span class="sequence-card__stat-value">{{ sequence.nodes.length }}</span>
-          <span class="sequence-card__stat-label">fiche{{ sequence.nodes.length > 1 ? 's' : '' }}</span>
+          <span class="sequence-card__stat-label">étape{{ sequence.nodes.length > 1 ? 's' : '' }}</span>
         </div>
 
         <div v-if="sequence.estimatedHours" class="sequence-card__stat">
