@@ -46,8 +46,11 @@ const exerciceCount = computed(() => {
         </p>
 
         <div class="home-hero__actions">
-          <RouterLink class="btn btn--primary" to="/parcours/domaine">
-            Commencer un parcours
+          <RouterLink class="btn btn--primary" to="/roadmap">
+            Commencer le parcours
+          </RouterLink>
+          <RouterLink class="btn btn--ghost" to="/parcours/domaine">
+            Voir toutes les fiches
           </RouterLink>
         </div>
 
