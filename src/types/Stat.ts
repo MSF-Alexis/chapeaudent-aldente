@@ -1,5 +1,6 @@
 import type { SheetType } from "@/types/Sheet"
 
+export const TYPES = ['html', 'css', 'js', 'integration']
 export type EntitiesCount = {
   sheets: Entities[]
   sequences: Entities[]

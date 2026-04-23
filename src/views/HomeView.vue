@@ -94,7 +94,7 @@ const exerciceCount = computed(() => {
           sequenceCount: getIndividualCount('sequences', 'html'),
           exerciceCount: getIndividualCount('exercices', 'html'),
           additionnalClasses: 'domain-card--html',
-          ctaLink: '/html',
+          ctaLink: '/parcours/domaine/html',
         }">
 
           <template #description>
@@ -114,7 +114,7 @@ const exerciceCount = computed(() => {
           sequenceCount: getIndividualCount('sequences', 'css'),
           exerciceCount: getIndividualCount('exercices', 'css'),
           additionnalClasses: 'domain-card--css',
-          ctaLink: '/css',
+          ctaLink: '/parcours/domaine/css',
         }">
 
           <template #description>
@@ -134,7 +134,7 @@ const exerciceCount = computed(() => {
           sequenceCount: getIndividualCount('sequences', 'js'),
           exerciceCount: getIndividualCount('exercices', 'js'),
           additionnalClasses: 'domain-card--js',
-          ctaLink: '/js',
+          ctaLink: '/parcours/domaine/js',
         }">
           <template #description>
             Logique, DOM, événements, JSON, asynchrone, gestion d’erreurs,
