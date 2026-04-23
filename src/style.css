@@ -1,6 +1,5 @@
 :root {
-  --font-sans:
-    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   --color-bg: #f8fafc;
   --color-bg-alt: #f1f5f9;
@@ -261,6 +260,53 @@ nav img {
   margin-top: var(--space-md);
 }
 
+.domain-card__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.pill--stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-soft);
+  font-size: var(--font-size-xs);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.pill--stat strong {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+.domain-card--html .pill--stat {
+  background-color: color-mix(in srgb, var(--color-html) 8%, white);
+  border-color: color-mix(in srgb, var(--color-html) 18%, var(--color-border));
+}
+
+.domain-card--css .pill--stat {
+  background-color: color-mix(in srgb, var(--color-css) 8%, white);
+  border-color: color-mix(in srgb, var(--color-css) 18%, var(--color-border));
+}
+
+.domain-card--js .pill--stat {
+  background-color: color-mix(in srgb, var(--color-js) 14%, white);
+  border-color: color-mix(in srgb, var(--color-js) 24%, var(--color-border));
+}
+
+.domain-card--integration .pill--stat {
+  background-color: color-mix(in srgb, var(--color-integration) 10%, white);
+  border-color: color-mix(in srgb, var(--color-integration) 20%, var(--color-border));
+}
+
 .level-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(13.75rem, 1fr));
@@ -351,7 +397,7 @@ nav img {
 }
 
 .text-on-light {
-  color : var(--color-text-soft);
+  color: var(--color-text-soft);
 }
 
 .btn--light:hover {
@@ -429,27 +475,27 @@ nav img {
   border-color: #c7d2fe;
 }
 
-.pill--level[data-level="Initial"] {
+.pill--level[data-level='Initial'] {
   background-color: var(--color-level-initial-bg);
   color: var(--color-level-initial-text);
 }
 
-.pill--level[data-level="Basique"] {
+.pill--level[data-level='Basique'] {
   background-color: var(--color-level-basic-bg);
   color: var(--color-level-basic-text);
 }
 
-.pill--level[data-level="Opérationnel"] {
+.pill--level[data-level='Opérationnel'] {
   background-color: var(--color-level-operational-bg);
   color: var(--color-level-operational-text);
 }
 
-.pill--level[data-level="Avancé"] {
+.pill--level[data-level='Avancé'] {
   background-color: var(--color-level-advanced-bg);
   color: var(--color-level-advanced-text);
 }
 
-.pill--level[data-level="Expert"] {
+.pill--level[data-level='Expert'] {
   background-color: var(--color-level-expert-bg);
   color: var(--color-level-expert-text);
 }
@@ -664,7 +710,7 @@ nav img {
 
 .fiche-detail__exemple-actions {
   position: absolute;
-  top : 0px;
+  top: 0px;
   right: 0;
   display: inline-flex;
   align-items: center;

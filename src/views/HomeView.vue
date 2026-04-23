@@ -3,6 +3,7 @@ import { onMounted, computed, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useStats } from '@/composables/useStats'
 import type { EntitiesCount } from '@/types/Stat'
+import DomainCard from '@/components/home/DomainCard.vue'
 
 const { fetchStats, loading } = useStats()
 
@@ -11,16 +12,24 @@ onMounted(async () => {
   stats.value = await fetchStats()
 })
 
+const getIndividualCount = (entity: keyof EntitiesCount, type: string): number => {
+  const entityStats = stats.value?.[entity]
+
+  if (!Array.isArray(entityStats)) return 0
+
+  return entityStats.find((item) => item.type === type)?.count ?? 0
+}
+
 const sheetCount = computed(() => {
-  return stats.value?.sheets ?? 0
+  return stats.value?.sheets?.reduce((accumulator, currentEntityCount) => accumulator + currentEntityCount.count, 0)
 })
 
 const sequenceCount = computed(() => {
-  return stats.value?.sequences ?? 0
+  return stats.value?.sequences?.reduce((accumulator, currentEntityCount) => accumulator + currentEntityCount.count, 0)
 })
 
 const exerciceCount = computed(() => {
-  return stats.value?.exercices ?? 0
+  return stats.value?.exercices?.reduce((accumulator, currentEntityCount) => accumulator + currentEntityCount.count, 0)
 })
 
 
@@ -81,87 +90,64 @@ const exerciceCount = computed(() => {
       <h2>Domaines de compétences</h2>
 
       <div class="domain-grid">
-        <article class="domain-card domain-card--html">
-          <h3>HTML</h3>
-          <p class="domain-card__description">
+        <DomainCard :domain-card-props="{
+          isLoading : loading,
+          title: 'HTML',
+          sheetCount: getIndividualCount('sheets', 'html'),
+          sequenceCount: getIndividualCount('sequences', 'html'),
+          exerciceCount: getIndividualCount('exercices', 'html'),
+          additionnalClasses: 'domain-card--html',
+          ctaLink: '/html',
+        }">
+
+          <template #description>
             Structurer le contenu, utiliser les balises sémantiques,
             formulaires, tableaux, accessibilité…
-          </p>
+          </template>
 
-          <ul class="domain-card__meta">
-            <li><strong>Fiches :</strong> {{ 0 }}</li>
-            <li><strong>Niveaux :</strong> Initial → Expert</li>
-            <li><strong>Compétences clés :</strong> structure de page, formulaires, tableaux, accessibilité.
-            </li>
-          </ul>
+          <template #key-skills>
+            structure de page, formulaires, tableaux, accessibilité.
+          </template>
+        </DomainCard>
 
-          <div class="domain-card__actions">
-            <RouterLink class="btn btn--secondary" to="/html">
-              Explorer les fiches HTML
-            </RouterLink>
-          </div>
-        </article>
+        <DomainCard :domain-card-props="{
+          isLoading : loading,
+          title: 'CSS',
+          sheetCount: getIndividualCount('sheets', 'css'),
+          sequenceCount: getIndividualCount('sequences', 'css'),
+          exerciceCount: getIndividualCount('exercices', 'css'),
+          additionnalClasses: 'domain-card--css',
+          ctaLink: '/css',
+        }">
 
-        <article class="domain-card domain-card--css">
-          <h3>CSS</h3>
-          <p class="domain-card__description">
+          <template #description>
             Mise en forme, layout, responsive design, Flexbox, Grid,
             animations, thèmes et accessibilité.
-          </p>
+          </template>
 
-          <ul class="domain-card__meta">
-            <li><strong>Fiches :</strong> {{ 0 }}</li>
-            <li><strong>Niveaux :</strong> Initial → Expert</li>
-            <li><strong>Compétences clés :</strong> box model, Flexbox, Grid, media queries.</li>
-          </ul>
+          <template #key-skills>
+            box model, Flexbox, Grid, media queries.
+          </template>
+        </DomainCard>
 
-          <div class="domain-card__actions">
-            <RouterLink class="btn btn--secondary" to="/css">
-              Explorer les fiches CSS
-            </RouterLink>
-          </div>
-        </article>
-
-        <article class="domain-card domain-card--js">
-          <h3>JavaScript</h3>
-          <p class="domain-card__description">
+        <DomainCard :domain-card-props="{
+          isLoading : loading,
+          title: 'JavaScript',
+          sheetCount: getIndividualCount('sheets', 'js'),
+          sequenceCount: getIndividualCount('sequences', 'js'),
+          exerciceCount: getIndividualCount('exercices', 'js'),
+          additionnalClasses: 'domain-card--js',
+          ctaLink: '/js',
+        }">
+          <template #description>
             Logique, DOM, événements, JSON, asynchrone, gestion d’erreurs,
             localStorage et patterns avancés.
-          </p>
+          </template>
 
-          <ul class="domain-card__meta">
-            <li><strong>Fiches :</strong> {{ 0 }}</li>
-            <li><strong>Niveaux :</strong> Initial → Expert</li>
-            <li><strong>Compétences clés :</strong> DOM, événements, tableaux, fonctions, async/await.</li>
-          </ul>
-
-          <div class="domain-card__actions">
-            <RouterLink class="btn btn--secondary" to="/js">
-              Explorer les fiches JavaScript
-            </RouterLink>
-          </div>
-        </article>
-
-        <article class="domain-card domain-card--integration">
-          <h3>Intégration</h3>
-          <p class="domain-card__description">
-            Bonnes pratiques d’intégration, accessibilité, performance,
-            workflow et organisation des projets.
-          </p>
-
-          <ul class="domain-card__meta">
-            <li><strong>Fiches :</strong> {{ 0 }}</li>
-            <li><strong>Niveaux :</strong> Initial → Expert</li>
-            <li><strong>Compétences clés :</strong> structure de projet, bonnes pratiques, a11y,
-              performances.</li>
-          </ul>
-
-          <div class="domain-card__actions">
-            <RouterLink class="btn btn--secondary" to="/integration">
-              Explorer les fiches d’intégration
-            </RouterLink>
-          </div>
-        </article>
+          <template #key-skills>
+            DOM, événements, tableaux, fonctions, async/await.
+          </template>
+        </DomainCard>
       </div>
     </section>
   </main>
@@ -197,5 +183,21 @@ const exerciceCount = computed(() => {
   font-size: 0.95rem;
   color: var(--color-text-muted, #64748b);
   text-align: center;
+}
+
+@media (max-width: 640px) {
+  .home-stats {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stat-card {
+    width: 100%;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .stat-card__number {
+    font-size: 2.2rem;
+  }
 }
 </style>

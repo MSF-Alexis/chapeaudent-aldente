@@ -1,5 +1,12 @@
+import type { SheetType } from "@/types/Sheet"
+
 export type EntitiesCount = {
-  sheets: number
-  sequences: number
-  exercices: number
+  sheets: Entities[]
+  sequences: Entities[]
+  exercices: Entities[]
+}
+
+export type Entities = {
+  type : SheetType,
+  count : number
 }
