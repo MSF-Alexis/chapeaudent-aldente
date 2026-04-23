@@ -17,6 +17,9 @@ import logo from '@/assets/logo.png';
             <RouterLink to="/parcours/domaine/html" class="app-nav__link">
               Parcours
             </RouterLink>
+            <RouterLink to="/roadmap" class="app-nav__link">
+              Roadmap
+            </RouterLink>
           </li>
         </ul>
       </nav>
