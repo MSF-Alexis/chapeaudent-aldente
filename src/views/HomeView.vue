@@ -49,9 +49,6 @@ const exerciceCount = computed(() => {
           <RouterLink class="btn btn--primary" to="/parcours">
             Commencer un parcours
           </RouterLink>
-          <RouterLink class="btn btn--ghost" to="/">
-            Voir toutes les fiches
-          </RouterLink>
         </div>
 
         <p class="home-hero__hint">
@@ -91,7 +88,7 @@ const exerciceCount = computed(() => {
 
       <div class="domain-grid">
         <DomainCard :domain-card-props="{
-          isLoading : loading,
+          isLoading: loading,
           title: 'HTML',
           sheetCount: getIndividualCount('sheets', 'html'),
           sequenceCount: getIndividualCount('sequences', 'html'),
@@ -111,7 +108,7 @@ const exerciceCount = computed(() => {
         </DomainCard>
 
         <DomainCard :domain-card-props="{
-          isLoading : loading,
+          isLoading: loading,
           title: 'CSS',
           sheetCount: getIndividualCount('sheets', 'css'),
           sequenceCount: getIndividualCount('sequences', 'css'),
@@ -131,7 +128,7 @@ const exerciceCount = computed(() => {
         </DomainCard>
 
         <DomainCard :domain-card-props="{
-          isLoading : loading,
+          isLoading: loading,
           title: 'JavaScript',
           sheetCount: getIndividualCount('sheets', 'js'),
           sequenceCount: getIndividualCount('sequences', 'js'),
