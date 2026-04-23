@@ -192,6 +192,10 @@ watch(
 
 .parcours-tabs-view__panel {
   padding: var(--space-xl);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
 }
 
 .parcours-tabs-view__panel-header {
